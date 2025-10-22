@@ -4,20 +4,20 @@ class ItemModalBottomComponent extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
+  final Function()? onTap;
 
   const ItemModalBottomComponent({
     super.key,
     required this.icon,
     required this.title,
     required this.description,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Row(

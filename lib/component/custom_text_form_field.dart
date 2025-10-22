@@ -35,8 +35,12 @@ class CustomTextFormField extends StatelessWidget {
 
   // Validação
   final String? Function(String?)? validator;
+  final bool required; // 👈 novo parâmetro
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
+
+  final bool? filled;
+  final Color? fillColor;
 
   const CustomTextFormField({
     Key? key,
@@ -61,8 +65,11 @@ class CustomTextFormField extends StatelessWidget {
     this.minLines,
     this.maxLength,
     this.validator,
+    this.required = false, // valor padrão
     this.onChanged,
     this.onFieldSubmitted,
+    this.filled,
+    this.fillColor,
   }) : super(key: key);
 
   @override
@@ -78,9 +85,9 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
-      validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
+      validator: validator ?? (required ? _defaultValidator : null),
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
@@ -92,10 +99,18 @@ class CustomTextFormField extends StatelessWidget {
         focusedBorder: focusedBorder,
         enabledBorder: enabledBorder,
         errorBorder: errorBorder,
-        counterText: "", // remove contagem de caracteres padrão
-        isDense: true, // deixa o campo mais compacto
+        isDense: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        filled: filled,
+        fillColor: fillColor,
       ),
     );
+  }
+
+  String? _defaultValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return '${hintText ?? "Campo"} é obrigatório';
+    }
+    return null;
   }
 }

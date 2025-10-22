@@ -53,20 +53,20 @@ class DatabaseInfra {
     ''',
     4: '''
     INSERT INTO categories (name, type, color) VALUES
-    ('Alimentação', 'expense', '#FF7043'),
-    ('Transporte', 'expense', '#29B6F6'),
-    ('Moradia', 'expense', '#8E24AA'),
-    ('Lazer', 'expense', '#FBC02D'),
-    ('Educação', 'expense', '#7CB342'),
-    ('Saúde', 'expense', '#E53935'),
-    ('Contas e Serviços', 'expense', '#5C6BC0'),
-    ('Roupas', 'expense', '#8D6E63'),
-    ('Outros', 'expense', '#BDBDBD'),
-    ('Salário', 'income', '#43A047'),
-    ('Freelance', 'income', '#26A69A'),
-    ('Investimentos', 'income', '#1E88E5'),
-    ('Presentes', 'income', '#9C27B0'),
-    ('Reembolso', 'income', '#F57C00')
+      ('Alimentação', 'expense', '#FFAB91'),   -- laranja claro
+      ('Transporte', 'expense', '#81D4FA'),    -- azul claro
+      ('Moradia', 'expense', '#CE93D8'),       -- roxo claro
+      ('Lazer', 'expense', '#FFF59D'),         -- amarelo pastel
+      ('Educação', 'expense', '#AED581'),      -- verde claro
+      ('Saúde', 'expense', '#EF9A9A'),         -- vermelho suave
+      ('Contas e Serviços', 'expense', '#90CAF9'), -- azul pastel
+      ('Roupas', 'expense', '#BCAAA4'),        -- marrom suave
+      ('Outros', 'expense', '#E0E0E0'),        -- cinza claro
+      ('Salário', 'income', '#A5D6A7'),        -- verde suave
+      ('Freelance', 'income', '#80CBC4'),      -- azul esverdeado
+      ('Investimentos', 'income', '#90CAF9'),  -- azul pastel
+      ('Presentes', 'income', '#CE93D8'),      -- roxo claro
+      ('Reembolso', 'income', '#FFCC80');      -- laranja pastel
   '''
   };
 
