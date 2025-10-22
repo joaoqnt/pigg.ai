@@ -11,32 +11,29 @@ class Styles {
   static const Color primaryColor = ultramarine;
   static const Color secondaryColor = blueMarguerite;
   static const Color backgroundColor = snuff;
-  static const Color textColor = navyBlue;
   static const Color accentColor = persianBlue;
 
   // 🖋️ Text styles
   static const TextStyle heading1 = TextStyle(
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
     fontSize: 24,
     fontWeight: FontWeight.bold,
-    color: textColor,
   );
 
   static const TextStyle heading2 = TextStyle(
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
     fontSize: 20,
     fontWeight: FontWeight.w600,
-    color: textColor,
   );
 
   static const TextStyle body = TextStyle(
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
     fontSize: 16,
-    color: textColor,
+    fontWeight: FontWeight.w400,
   );
 
   static const TextStyle button = TextStyle(
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
     fontSize: 16,
     fontWeight: FontWeight.bold,
     color: Colors.white,
@@ -75,9 +72,8 @@ class Styles {
     ),
     scaffoldBackgroundColor: backgroundColor,
     elevatedButtonTheme: ElevatedButtonThemeData(style: primaryButton),
-    fontFamily: 'Roboto',
+    fontFamily: 'Poppins',
 
-    // TextTheme global
     textTheme: const TextTheme(
       headlineSmall: heading1,
       titleMedium: heading2,
@@ -85,7 +81,6 @@ class Styles {
       labelLarge: button,
     ),
 
-    // AppBar
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -95,28 +90,25 @@ class Styles {
       actionsIconTheme: IconThemeData(color: navyBlue),
     ),
 
-    // BottomNavigationBar
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: primaryColor,
       unselectedItemColor: Colors.grey,
-      selectedLabelStyle: TextStyle(
-        fontFamily: 'Roboto',
+      selectedLabelStyle: const TextStyle(
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.w600,
         fontSize: 12,
       ),
-      unselectedLabelStyle: TextStyle(
-        fontFamily: 'Roboto',
+      unselectedLabelStyle: const TextStyle(
+        fontFamily: 'Poppins',
         fontSize: 12,
       ),
       type: BottomNavigationBarType.fixed,
     ),
 
-
-    // Input
     inputDecorationTheme: InputDecorationTheme(
-      labelStyle: const TextStyle(fontFamily: 'Roboto', color: Colors.grey),
-      hintStyle: const TextStyle(fontFamily: 'Roboto', color: Colors.grey),
+      labelStyle: const TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+      hintStyle: const TextStyle(fontFamily: 'Poppins', color: Colors.grey),
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),

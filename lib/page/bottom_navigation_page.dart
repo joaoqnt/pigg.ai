@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piggai/component/bottom_navigation_component/modal_bottom_component.dart';
 import 'package:piggai/styles.dart';
 
 class BottomNavigationPage extends StatefulWidget {
@@ -21,14 +22,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          'Início',
-          style: Styles.heading1,
-        ),
-      ),
+      body: _pages[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => ModalBottomComponent().show(context),
         backgroundColor: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -38,7 +34,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             width: 2,
           ),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.grey,
           size: 28,
@@ -77,7 +73,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           ],
         ),
       ),
-
     );
   }
 }
