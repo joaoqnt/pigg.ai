@@ -1,20 +1,22 @@
 import 'dart:convert';
 
+import 'category_model.dart';
+
 class TransactionModel {
   int? id;
   double amount;
   String description;
   String type; // 'income' | 'expense'
-  int categoryId;
   DateTime date;
+  CategoryModel category; // obrigatória agora
 
   TransactionModel({
     this.id,
     required this.amount,
     required this.description,
     required this.type,
-    required this.categoryId,
     required this.date,
+    required this.category,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -23,8 +25,8 @@ class TransactionModel {
       amount: (json['amount'] as num).toDouble(),
       description: json['description'],
       type: json['type'],
-      categoryId: json['category_id'],
       date: DateTime.parse(json['date']),
+      category: CategoryModel.fromJson(json['category']),
     );
   }
 
@@ -33,12 +35,9 @@ class TransactionModel {
     'amount': amount,
     'description': description,
     'type': type,
-    'category_id': categoryId,
     'date': date.toIso8601String(),
+    'category_id': category.toJson(),
   };
 
   String toRawJson() => jsonEncode(toJson());
-
-  factory TransactionModel.fromRawJson(String str) =>
-      TransactionModel.fromJson(jsonDecode(str));
 }

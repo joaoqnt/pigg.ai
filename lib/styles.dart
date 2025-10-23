@@ -24,14 +24,12 @@ class Styles {
 
   static const TextStyle body = TextStyle(
     fontFamily: 'Poppins',
-    fontSize: 16,
     fontWeight: FontWeight.w400,
     color: textColor,
   );
 
   static const TextStyle button = TextStyle(
     fontFamily: 'Poppins',
-    fontSize: 16,
     color: Colors.white,
   );
 
@@ -57,6 +55,7 @@ class Styles {
     elevation: 0,
   );
 
+
   static final ThemeData theme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
@@ -80,14 +79,20 @@ class Styles {
     ),
 
     // ✅ FAB leve
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: secondaryColor,
-      elevation: 2,
       foregroundColor: Colors.white,
+      elevation: 2,
+      extendedPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      // Texto compacto
+      extendedTextStyle: button.copyWith(
+        fontWeight: FontWeight.normal,
+      ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(50)),
+        borderRadius: BorderRadius.circular(12), // Bordas menos arredondadas
       ),
     ),
+
 
     // ✅ PopupMenuButton
       popupMenuTheme: PopupMenuThemeData(
@@ -135,7 +140,9 @@ class Styles {
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24)
+        ),
       ),
     ),
 
@@ -147,7 +154,6 @@ class Styles {
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
 
-    hoverColor: secondaryColor.withOpacity(0.1),
     dialogTheme: DialogThemeData(
       backgroundColor: Colors.white,
     )

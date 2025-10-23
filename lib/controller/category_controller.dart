@@ -29,6 +29,8 @@ abstract class _CategoryController with Store{
   String type = "expense";
   @observable
   bool isInserting = false;
+  @observable
+  Map<CategoryModel,bool> isDeleting = ObservableMap.of({});
 
   Future<List<CategoryModel>> initialize(BuildContext context) async{
     _context = context;
@@ -56,15 +58,26 @@ abstract class _CategoryController with Store{
   void setIsInserting(bool value) => isInserting = value;
 
   @action
+  void setIsDeleting(bool value,CategoryModel category) => isDeleting[category] = value;
+
+  @action
   void setType(String newType) => type = newType;
 
   @action
   Future alterCategory({CategoryModel? category, bool isDelete = false}) async {
-    setIsInserting(true);
+    if(!isDelete){
+      setIsInserting(true);
+    } else {
+      setIsDeleting(true, category!);
+    }
+
     String action;
     try{
       await Future.delayed(const Duration(milliseconds: 500));
       CategoryModel categoryTmp = _buildCategory(category: category);
+      if(isDelete) {
+        categoryTmp.name = category!.name;
+      }
       if(category == null){
         action = "criou";
         await _dao.insert(
@@ -73,15 +86,30 @@ abstract class _CategoryController with Store{
         );
       } else {
         action = isDelete ? "excluiu" : "editou";
-        await _dao.update(
-            "categories",
-            categoryTmp.toJson(),
-            "id = ?",
-            [categoryTmp.id]
-        );
+        if(isDelete){
+          await _dao.delete(
+              "categories",
+              "id = ?",
+              [categoryTmp.id]
+          );
+          await _dao.delete(
+              "transactions",
+              "category_id = ?",
+              [categoryTmp.id]
+          );
+        } else {
+          await _dao.update(
+              "categories",
+              categoryTmp.toJson(),
+              "id = ?",
+              [categoryTmp.id]
+          );
+        }
       }
       await getCategories();
-      Navigator.pop(_context);
+      if(!isDelete) {
+        Navigator.pop(_context);
+      }
       CustomSnackBar.show(
           context: _context,
           message: "Você $action a categoria ${categoryTmp.name}",
@@ -95,7 +123,11 @@ abstract class _CategoryController with Store{
           type: AnimatedSnackBarType.error
       );
     }
-    setIsInserting(false);
+    if(!isDelete){
+      setIsInserting(false);
+    } else {
+      setIsDeleting(false, category!);
+    }
   }
 
   CategoryModel _buildCategory({CategoryModel? category}) {

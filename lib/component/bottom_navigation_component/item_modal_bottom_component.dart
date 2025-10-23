@@ -24,17 +24,19 @@ class ItemModalBottomComponent extends StatelessWidget {
           children: [
             CircleAvatar(radius: 30,child: Icon(icon,size: 30,),),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(description,
-                    style: TextStyle(fontSize: 12)
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(description,
+                      style: TextStyle(fontSize: 12)
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -11,6 +11,7 @@ class CustomDeleteDialog {
         String cancelText = 'Cancelar',
         String confirmText = 'Excluir',
         Color confirmColor = Colors.redAccent,
+        Function()? onPressed,
       }) {
     return showDialog(
         context: context,
@@ -38,11 +39,12 @@ class CustomDeleteDialog {
                       children: [
                         Expanded(
                           child: TextButton(
-                              onPressed: () {
-
-                              },
+                              onPressed: onPressed,
                               child: Text(confirmText,
-                                style: TextStyle(color: confirmColor)
+                                style: TextStyle(
+                                    color: confirmColor,
+                                    fontWeight: FontWeight.bold
+                                )
                               )
                           ),
                         ),
@@ -51,7 +53,9 @@ class CustomDeleteDialog {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.grey.shade300))
+                        border: Border(
+                            bottom: BorderSide(color: Colors.grey.shade300)
+                        )
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,7 +64,7 @@ class CustomDeleteDialog {
                         Expanded(
                           child: TextButton(
                               onPressed: () {
-
+                                Navigator.pop(context);
                               },
                               child: Text(cancelText,
                                 style: TextStyle(color: Colors.black87)

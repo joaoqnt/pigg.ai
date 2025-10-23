@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/component/bottom_navigation_component/modal_bottom_component.dart';
+import 'package:piggai/page/transaction_page.dart';
 import 'package:piggai/styles.dart';
 
 class BottomNavigationPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final List<Widget> _pages = [
     Center(child: Text('Início')),
     Center(child: Text('Metas')),
-    Center(child: Text('Carteira')),
+    TransactionPage(),
     Center(child: Text('Perfil')),
   ];
 

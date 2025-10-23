@@ -99,7 +99,7 @@ class CustomBlurDialog {
                                     options[i].label,
                                     style: TextStyle(
                                       color: options[i].textColor,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: options[i].fontWeight,
                                     ),
                                   ),
                                   onTap: () {
@@ -133,6 +133,7 @@ class BlurDialogOption {
   final Color? iconColor;
   final Color? textColor;
   final VoidCallback? onTap;
+  final FontWeight fontWeight;
 
   BlurDialogOption({
     required this.label,
@@ -140,5 +141,6 @@ class BlurDialogOption {
     this.iconColor,
     this.textColor,
     this.onTap,
+    this.fontWeight = FontWeight.w500,
   });
 }
