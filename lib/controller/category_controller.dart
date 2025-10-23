@@ -59,18 +59,41 @@ abstract class _CategoryController with Store{
   void setType(String newType) => type = newType;
 
   @action
-  Future createCategory() async {
+  Future alterCategory({CategoryModel? category, bool isDelete = false}) async {
     setIsInserting(true);
-
+    String action;
     try{
       await Future.delayed(const Duration(milliseconds: 500));
-      await _dao.insert("categories", _buildCategory().toJson());
+      CategoryModel categoryTmp = _buildCategory(category: category);
+      if(category == null){
+        action = "criou";
+        await _dao.insert(
+            "categories",
+            categoryTmp.toJson()
+        );
+      } else {
+        action = isDelete ? "excluiu" : "editou";
+        await _dao.update(
+            "categories",
+            categoryTmp.toJson(),
+            "id = ?",
+            [categoryTmp.id]
+        );
+      }
       await getCategories();
       Navigator.pop(_context);
-      CustomSnackBar.show(context: _context, message: "Categoria criada com sucesso", type: AnimatedSnackBarType.success);
+      CustomSnackBar.show(
+          context: _context,
+          message: "Você $action a categoria ${categoryTmp.name}",
+          type: AnimatedSnackBarType.success
+      );
     } catch(e){
       Navigator.pop(_context);
-      CustomSnackBar.show(context: _context, message: "Erro ao criar a categoria $e", type: AnimatedSnackBarType.error);
+      CustomSnackBar.show(
+          context: _context,
+          message: "Erro ao criar a categoria $e",
+          type: AnimatedSnackBarType.error
+      );
     }
     setIsInserting(false);
   }

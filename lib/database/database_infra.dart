@@ -52,21 +52,21 @@ class DatabaseInfra {
       )
     ''',
     4: '''
-    INSERT INTO categories (name, type, color) VALUES
-      ('Alimentação', 'expense', '#FFAB91'),   -- laranja claro
-      ('Transporte', 'expense', '#81D4FA'),    -- azul claro
-      ('Moradia', 'expense', '#CE93D8'),       -- roxo claro
-      ('Lazer', 'expense', '#FFF59D'),         -- amarelo pastel
-      ('Educação', 'expense', '#AED581'),      -- verde claro
-      ('Saúde', 'expense', '#EF9A9A'),         -- vermelho suave
-      ('Contas e Serviços', 'expense', '#90CAF9'), -- azul pastel
-      ('Roupas', 'expense', '#BCAAA4'),        -- marrom suave
-      ('Outros', 'expense', '#E0E0E0'),        -- cinza claro
-      ('Salário', 'income', '#A5D6A7'),        -- verde suave
-      ('Freelance', 'income', '#80CBC4'),      -- azul esverdeado
-      ('Investimentos', 'income', '#90CAF9'),  -- azul pastel
-      ('Presentes', 'income', '#CE93D8'),      -- roxo claro
-      ('Reembolso', 'income', '#FFCC80');      -- laranja pastel
+      INSERT INTO categories (name, type, color) VALUES
+        -- 💸 DESPESAS
+        ('Alimentação', 'expense', '#FFB74D'),       -- laranja (comida)
+        ('Transporte', 'expense', '#4FC3F7'),        -- azul claro (movimento)
+        ('Moradia', 'expense', '#9575CD'),           -- roxo suave (estabilidade)
+        ('Lazer', 'expense', '#FFD54F'),             -- amarelo (diversão)
+        ('Saúde', 'expense', '#E57373'),             -- vermelho suave (alerta)
+        ('Contas e Serviços', 'expense', '#90A4AE'), -- cinza azulado (rotina)
+        ('Outros', 'expense', '#E0E0E0'),            -- cinza claro (genérico)
+      
+        -- 💰 RECEITAS
+        ('Salário', 'income', '#81C784'),            -- verde médio (principal renda)
+        ('Freelance', 'income', '#64B5F6'),          -- azul (profissional)
+        ('Investimentos', 'income', '#4DB6AC'),      -- verde-água (crescimento)
+        ('Reembolso', 'income', '#A5D6A7');          -- verde claro (recuperar dinheiro)
   '''
   };
 

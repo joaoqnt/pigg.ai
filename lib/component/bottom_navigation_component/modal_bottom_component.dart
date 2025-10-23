@@ -28,7 +28,10 @@ class ModalBottomComponent {
                   icon: Icons.category,
                   title: "Categoria",
                   description: "Crie uma categoria para organizar",
-                  onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => CategoryPage())),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => CategoryPage()));
+                  }
                 ),
                 ItemModalBottomComponent(
                   icon: Icons.show_chart,

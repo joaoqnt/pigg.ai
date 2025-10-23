@@ -32,9 +32,9 @@ class CategoryModalBottom {
                     children: [
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              "Criar categoria",
+                              "${category == null ? "Criar" : "Editar"} categoria",
                               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                           ),
@@ -58,6 +58,7 @@ class CategoryModalBottom {
                               hintText: "Nome da categoria",
                               controller: controller.tecNameCategory,
                               required: true,
+                              autofocus: true,
                             ),
                           ),
                           CategoryColorPicker(controller: controller)
@@ -67,8 +68,8 @@ class CategoryModalBottom {
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async{
-                          if(controller.formKey.currentState!.validate()){
-                            await controller.createCategory();
+                          if(controller.formKey.currentState!.validate() && !controller.isInserting){
+                            await controller.alterCategory(category: category);
                           }
                         },
                         child: controller.isInserting ? Center(
@@ -77,7 +78,7 @@ class CategoryModalBottom {
                                 width: 20,
                                 child: CircularProgressIndicator(color: Colors.white)
                             )
-                        ) : Text("Criar categoria"),
+                        ) : Text("${category == null ? "Criar" : "Editar"} categoria"),
                       ),
                     ],
                   ),

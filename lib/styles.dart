@@ -148,7 +148,7 @@ class Styles {
     ),
 
     hoverColor: secondaryColor.withOpacity(0.1),
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: Colors.white,
     )
   );

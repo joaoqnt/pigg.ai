@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:piggai/component/category/category_modal_bottom.dart';
+import 'package:piggai/component/custom_blur_dialog.dart';
+import 'package:piggai/component/dialog/custom_delete_dialog.dart';
 import 'package:piggai/controller/category_controller.dart';
 import 'package:piggai/model/category_model.dart';
 import 'package:piggai/util/color_util.dart';
@@ -8,11 +12,12 @@ class CategoryContainer extends StatelessWidget {
   final CategoryModel category;
   final CategoryController controller;
 
-  const CategoryContainer({
+  CategoryContainer({
     super.key,
     required this.category,
     required this.controller,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +27,35 @@ class CategoryContainer extends StatelessWidget {
         onTap: () {
 
         },
+        onLongPress: () {
+          CustomBlurDialog.show(
+            context: context,
+            mainContent: CategoryContainer(
+              category: category,
+              controller: controller,
+            ),
+            options: [
+              BlurDialogOption(
+                label: 'Editar',
+                icon: Icons.edit,
+                iconColor: Colors.black54,
+                onTap: () {
+                  CategoryModalBottom().show(context, controller, category: category);
+                },
+              ),
+              BlurDialogOption(
+                label: 'Excluir',
+                icon: Icons.delete,
+                iconColor: Colors.redAccent,
+                onTap: () {
+                  CustomDeleteDialog.show(context);
+                  // ação de exclusão
+                },
+              ),
+            ],
+          );
+        },
+
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           decoration: BoxDecoration(
@@ -46,52 +80,13 @@ class CategoryContainer extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🔹 Nome + Menu ⋮ alinhados na mesma linha
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            category.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        PopupMenuButton<String>(
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              CategoryModalBottom().show(context, controller,category: category);
-                            } else if (value == 'delete') {
-                              // ação de excluir
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Text('Editar nome',
-                                // style: TextStyle(
-                                //     fontWeight: FontWeight.normal
-                                // ),
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Text('Excluir item',
-                                  // style: TextStyle(
-                                  //     fontWeight: FontWeight.normal
-                                  // )
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Text(
+                      category.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       category.type == 'income' ? 'Receita' : 'Despesa',

@@ -29,16 +29,18 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextInputAction? textInputAction;
   final bool enabled;
+  final bool autofocus; // 👈 novo parâmetro
   final int? maxLines;
   final int? minLines;
   final int? maxLength;
 
   // Validação
   final String? Function(String?)? validator;
-  final bool required; // 👈 novo parâmetro
+  final bool required;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
 
+  // Preenchimento
   final bool? filled;
   final Color? fillColor;
 
@@ -61,11 +63,12 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction,
     this.enabled = true,
+    this.autofocus = false, // 👈 valor padrão
     this.maxLines = 1,
     this.minLines,
     this.maxLength,
     this.validator,
-    this.required = false, // valor padrão
+    this.required = false,
     this.onChanged,
     this.onFieldSubmitted,
     this.filled,
@@ -82,6 +85,7 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       enabled: enabled,
+      autofocus: autofocus, // 👈 aqui aplicamos o foco automático
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -100,7 +104,8 @@ class CustomTextFormField extends StatelessWidget {
         enabledBorder: enabledBorder,
         errorBorder: errorBorder,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        contentPadding:
+        const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         filled: filled,
         fillColor: fillColor,
       ),
