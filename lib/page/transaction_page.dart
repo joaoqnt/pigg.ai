@@ -26,17 +26,17 @@ class TransactionPage extends StatelessWidget {
         ),
         children: [
           SpeedDialChild(
-            child: const Icon(Icons.money_off),
-            label: 'Despesa',
-            onTap: () {
-              TransactionModalBottom().show(context, _controller, "expense");
-            },
-          ),
-          SpeedDialChild(
             child: const Icon(Icons.attach_money),
             label: 'Receita',
             onTap: () {
               TransactionModalBottom().show(context, _controller, "income");
+            },
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.money_off),
+            label: 'Despesa',
+            onTap: () {
+              TransactionModalBottom().show(context, _controller, "expense");
             },
           ),
         ],
@@ -50,19 +50,25 @@ class TransactionPage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(20),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 20,
-                          children: [
-                            for(int i = 0; i < _controller.categories.length; i++)
-                              CategoryCircle(
-                                category: _controller.categories[i],
-                                isSelected: _controller.categorySelected[_controller.categories[i]],
-                                onTap: () => _controller.setCategory(_controller.categories[i]),
-                              )
-                          ],
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Filtrar categoria"),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                for(int i = 0; i < _controller.categories.length; i++)
+                                  CategoryCircle(
+                                    category: _controller.categories[i],
+                                    isSelected: _controller.categoryFilterSelected[_controller.categories[i]],
+                                    onTap: () => _controller.setCategoryFilter(_controller.categories[i]),
+                                  )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(

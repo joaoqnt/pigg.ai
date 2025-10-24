@@ -85,7 +85,7 @@ class CategoryContainer extends StatelessWidget {
               key: ValueKey(category.id),
               endActionPane: ActionPane(
                 motion: const ScrollMotion(),
-                extentRatio: 0.2,
+                extentRatio: 0.4,
                 children: _buildSwipeActions(context),
               ),
               child: container,
@@ -106,7 +106,7 @@ class CategoryContainer extends StatelessWidget {
           onPressed: (_) {
             _editCategory(context);
           },
-          backgroundColor: const Color(0xFFFBFBFB),
+          backgroundColor: Colors.grey.shade200,
           icon: Icons.edit_outlined,
         ),
       );
@@ -150,6 +150,8 @@ class CategoryContainer extends StatelessWidget {
           label: 'Excluir',
           icon: Icons.delete,
           iconColor: Colors.redAccent,
+          textColor: Colors.redAccent,
+          fontWeight: FontWeight.bold,
           onTap: () {
             Navigator.pop(context);
             _deleteCategory(context);

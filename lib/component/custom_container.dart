@@ -29,8 +29,8 @@ class CustomContainer extends StatelessWidget {
       child: isLoading == true ? Container(
         alignment: Alignment.center,
         child: SizedBox(
-          width: 28,
-          height: 28,
+          width: 20,
+          height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2.5,
             color: iconColor
@@ -39,7 +39,7 @@ class CustomContainer extends StatelessWidget {
       ) : Icon(
         iconData,
         color: iconColor,
-        size: 32,
+        size: 26,
       )
     );
   }

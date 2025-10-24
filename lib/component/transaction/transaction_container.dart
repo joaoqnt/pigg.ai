@@ -2,13 +2,11 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:piggai/component/category/category_modal_bottom.dart';
 import 'package:piggai/component/custom_blur_dialog.dart';
 import 'package:piggai/component/custom_container.dart';
 import 'package:piggai/component/dialog/custom_delete_dialog.dart';
-import 'package:piggai/controller/category_controller.dart';
+import 'package:piggai/component/transaction/transaction_modal_bottom.dart';
 import 'package:piggai/controller/transaction_controller.dart';
-import 'package:piggai/model/category_model.dart';
 import 'package:piggai/model/transaction_model.dart';
 import 'package:piggai/util/color_util.dart';
 import 'package:piggai/util/date_util.dart';
@@ -31,13 +29,20 @@ class TransactionContainer extends StatelessWidget {
           key: ValueKey(transaction.id),
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
-            extentRatio: 0.2,
+            extentRatio: 0.4,
             children: [
               SlidableAction(
                 onPressed: (_) {
-                  // CategoryModalBottom().show(context, controller, category: category);
+                  TransactionModalBottom().show(context, controller, transaction.type,transactionClone: transaction);
                 },
-                backgroundColor: Color(0xFFFBFBFB),
+                backgroundColor: Colors.grey.shade100,
+                icon: Icons.copy,
+              ),
+              SlidableAction(
+                onPressed: (_) {
+                  TransactionModalBottom().show(context, controller, transaction.type,transaction: transaction);
+                },
+                backgroundColor: Colors.grey.shade200,
                 icon: Icons.edit_outlined,
               ),
               SlidableAction(
@@ -46,7 +51,7 @@ class TransactionContainer extends StatelessWidget {
                       context,
                       onPressed: () {
                         Navigator.pop(context);
-                        // controller.alterCategory(category: category,isDelete: true);
+                        controller.alterTransaction(transaction: transaction,isDelete: true);
                       }
                   );
                 },
@@ -70,23 +75,33 @@ class TransactionContainer extends StatelessWidget {
                   ),
                   options: [
                     BlurDialogOption(
+                      label: 'Duplicar',
+                      icon: Icons.copy,
+                      iconColor: Colors.black54,
+                      onTap: () {
+                        TransactionModalBottom().show(context, controller, transaction.type,transactionClone: transaction);
+                      },
+                    ),
+                    BlurDialogOption(
                       label: 'Editar',
                       icon: Icons.edit,
                       iconColor: Colors.black54,
                       onTap: () {
-                        // CategoryModalBottom().show(context, controller, category: category);
+                        TransactionModalBottom().show(context, controller, transaction.type,transaction: transaction);
                       },
                     ),
                     BlurDialogOption(
                       label: 'Excluir',
                       icon: Icons.delete,
                       iconColor: Colors.redAccent,
+                      textColor: Colors.redAccent,
+                      fontWeight: FontWeight.bold,
                       onTap: () {
                         CustomDeleteDialog.show(
                           context,
                           onPressed: () {
                             Navigator.pop(context);
-                            // controller.alterCategory(category: category,isDelete: true);
+                            controller.alterTransaction(transaction: transaction,isDelete: true);
                           },
                         );
                       },
@@ -137,7 +152,7 @@ class TransactionContainer extends StatelessWidget {
                       child: Text(UtilBrasilFields.obterReal(transaction.amount),
                         style: TextStyle(
                             color: transaction.type == 'income' ? Colors.green : Colors.red,
-                            fontSize: 12,
+                            fontSize: 10,
                             fontWeight: FontWeight.bold
                         )
                       ),

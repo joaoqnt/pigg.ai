@@ -6,10 +6,14 @@ class DateUtil {
     return '${_twoDigits(date.day)}/${_twoDigits(date.month)}/${date.year}';
   }
 
+  /// Formata DateTime para HH:mm (formato 24h)
+  static String formatHour(DateTime date) {
+    return '${_twoDigits(date.hour)}:${_twoDigits(date.minute)}';
+  }
+
   /// Formata DateTime para dd/MM/yyyy HH:mm
   static String formatDateTime(DateTime date) {
-    return '${_twoDigits(date.day)}/${_twoDigits(date.month)}/${date.year} '
-        '${_twoDigits(date.hour)}:${_twoDigits(date.minute)}';
+    return '${formatDate(date)} ${formatHour(date)}';
   }
 
   /// Converte string ISO ou dd/MM/yyyy HH:mm para DateTime
@@ -30,6 +34,57 @@ class DateUtil {
       }
       throw FormatException('Formato de data inválido: $dateString');
     }
+  }
+
+  /// Combina string de data (dd/MM/yyyy) e hora (HH:mm) em um DateTime
+  static DateTime parseFromDateAndHour(String dateString, String hourString) {
+    try {
+      // Divide a data
+      final dateParts = dateString.split('/');
+      if (dateParts.length != 3) {
+        throw FormatException('Formato de data inválido: $dateString. Use dd/MM/yyyy');
+      }
+
+      // Divide a hora
+      final hourParts = hourString.split(':');
+      if (hourParts.length < 1 || hourParts.length > 2) {
+        throw FormatException('Formato de hora inválido: $hourString. Use HH:mm');
+      }
+
+      // Parse dos componentes
+      final day = int.parse(dateParts[0]);
+      final month = int.parse(dateParts[1]);
+      final year = int.parse(dateParts[2]);
+
+      final hour = int.parse(hourParts[0]);
+      final minute = hourParts.length > 1 ? int.parse(hourParts[1]) : 0;
+
+      // Validações básicas
+      if (hour < 0 || hour > 23) {
+        throw FormatException('Hora inválida: $hour. Deve estar entre 00 e 23');
+      }
+      if (minute < 0 || minute > 59) {
+        throw FormatException('Minuto inválido: $minute. Deve estar entre 00 e 59');
+      }
+
+      return DateTime(year, month, day, hour, minute);
+
+    } catch (e) {
+      if (e is FormatException) {
+        rethrow;
+      }
+      throw FormatException('Erro ao converter data e hora: $dateString $hourString. Error: $e');
+    }
+  }
+
+  /// Método alternativo que recebe uma string completa "dd/MM/yyyy HH:mm"
+  static DateTime parseFromDateTimeString(String dateTimeString) {
+    final parts = dateTimeString.split(' ');
+    if (parts.length != 2) {
+      throw FormatException('Formato inválido: $dateTimeString. Use "dd/MM/yyyy HH:mm"');
+    }
+
+    return parseFromDateAndHour(parts[0], parts[1]);
   }
 
   /// Retorna DateTime.now()

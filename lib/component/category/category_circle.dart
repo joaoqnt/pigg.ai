@@ -33,19 +33,19 @@ class CategoryCircle extends StatelessWidget {
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeOut,
-              width: isSelected == true ? 55 : 50,
-              height: isSelected == true ? 55 : 50,
+              width: isSelected == true ? 35 : 30,
+              height: isSelected == true ? 35 : 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color,
                 border: Border.all(
                   color: darkColor,
-                  width: isSelected == true ? 3 : 1,
+                  width: isSelected == true ? 2 : 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isSelected == true ? 0.25 : 0.15),
-                    blurRadius: isSelected == true ? 6 : 3,
+                    color: Colors.black.withOpacity(isSelected == true ? 0.35 : 0.15),
+                    blurRadius: isSelected == true ? 8 : 3,
                     offset: const Offset(0, 3),
                   ),
                 ],
@@ -58,7 +58,7 @@ class CategoryCircle extends StatelessWidget {
                   child: Icon(
                     Icons.category_outlined,
                     color: darkColor,
-                    size: isSelected == true ? 26 : 22,
+                    size: isSelected == true ? 20 : 16,
                   ),
                 ),
               ),

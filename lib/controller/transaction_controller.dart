@@ -1,11 +1,13 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:piggai/component/custom_snackbar.dart';
 import 'package:piggai/database/database_dao.dart';
 import 'package:piggai/model/transaction_model.dart';
 import 'package:piggai/util/color_util.dart';
+import 'package:piggai/util/date_util.dart';
 import 'package:piggai/util/string_util.dart';
 
 import '../model/category_model.dart';
@@ -19,6 +21,8 @@ abstract class _TransactionController with Store{
   TextEditingController tecSearch = TextEditingController();
   TextEditingController tecDescriptionTransaction = TextEditingController();
   TextEditingController tecAmountTransaction = TextEditingController();
+  TextEditingController tecDateTransaction = TextEditingController();
+  TextEditingController tecHourTransaction = TextEditingController();
   List<CategoryModel> categories = [];
   List<TransactionModel> _transactions = [];
   final formKey = GlobalKey<FormState>();
@@ -31,7 +35,9 @@ abstract class _TransactionController with Store{
   @observable
   Map<TransactionModel,bool> isDeleting = ObservableMap.of({});
   @observable
-  Map<CategoryModel,bool> categorySelected = ObservableMap.of({});
+  Map<CategoryModel,bool> categoryFilterSelected = ObservableMap.of({});
+  @observable
+  CategoryModel? categorySelected;
   @observable
   ObservableList<TransactionModel> transactionsFiltered = ObservableList.of([]);
 
@@ -103,6 +109,68 @@ abstract class _TransactionController with Store{
   }
 
   @action
+  Future alterTransaction({TransactionModel? transaction, bool isDelete = false}) async {
+    if(!isDelete){
+      setIsInserting(true);
+    } else {
+      setIsDeleting(true, transaction!);
+    }
+
+    String action;
+    try{
+      await Future.delayed(const Duration(milliseconds: 500));
+      TransactionModel transactionTmp = _buildTransaction(transaction: transaction);
+      if(isDelete) {
+        transactionTmp.description = transaction!.description;
+      }
+      if(transaction == null){
+        action = "criou";
+        await _dao.insert(
+            "transactions",
+            transactionTmp.toJson()
+        );
+      } else {
+        action = isDelete ? "excluiu" : "editou";
+        if(isDelete){
+          await _dao.delete(
+              "transactions",
+              "id = ?",
+              [transactionTmp.id]
+          );
+        } else {
+          await _dao.update(
+              "transactions",
+              transactionTmp.toJson(),
+              "id = ?",
+              [transactionTmp.id]
+          );
+        }
+      }
+      await getTransactions();
+      if(!isDelete) {
+        Navigator.pop(_context);
+      }
+      CustomSnackBar.show(
+          context: _context,
+          message: "Você $action a ${transactionTmp.type == "income" ? "receita" : "despesa"} ${transactionTmp.description}",
+          type: AnimatedSnackBarType.success
+      );
+    } catch(e){
+      // Navigator.pop(_context);
+      CustomSnackBar.show(
+          context: _context,
+          message: "Erro $e",
+          type: AnimatedSnackBarType.error
+      );
+    }
+    if(!isDelete){
+      setIsInserting(false);
+    } else {
+      setIsDeleting(false, transaction!);
+    }
+  }
+
+  @action
   void setIsInserting(bool value) => isInserting = value;
 
   @action
@@ -112,7 +180,10 @@ abstract class _TransactionController with Store{
   void setType(String newType) => type = newType;
 
   @action
-  setCategory(CategoryModel category) => categorySelected[category] = !(categorySelected[category]??false);
+  setCategoryFilter(CategoryModel category) => categoryFilterSelected[category] = !(categoryFilterSelected[category]??false);
+
+  @action
+  setCategory(CategoryModel? category) => categorySelected = category;
 
   addAmount(double amount){
     try{
@@ -122,17 +193,63 @@ abstract class _TransactionController with Store{
     }
   }
 
-  setTransaction(TransactionModel? transaction){
+  removeAmount(double amount) {
+    try {
+      // Obtém o valor atual do campo
+      double currentValue = UtilBrasilFields.converterMoedaParaDouble(tecAmountTransaction.text);
+
+      // Se o valor for nulo, zero ou negativo, não faz nada
+      if (currentValue <= 0) return;
+
+      // Calcula o novo valor
+      double newValue = currentValue - amount;
+
+      // Garante que não fique negativo
+      if (newValue < 0) newValue = 0;
+
+      // Atualiza o campo com o valor formatado
+      tecAmountTransaction.text = UtilBrasilFields.obterReal(newValue);
+    } catch (e) {
+      // Se der erro e amount for válido, apenas mostra o valor formatado
+      if (amount > 0) {
+        tecAmountTransaction.text = UtilBrasilFields.obterReal(amount);
+      }
+    }
+  }
+
+  setTransaction(TransactionModel? transaction, {bool isClone = false}){
     if(transaction != null){
       tecDescriptionTransaction.text = transaction.description;
       tecAmountTransaction.text = UtilBrasilFields.obterReal(transaction.amount);
+      DateTime date = isClone ? DateTime.now() : transaction.date;
+      tecDateTransaction.text = DateUtil.formatDate(date);
+      tecHourTransaction.text = DateUtil.formatHour(date);
     } else {
       _clearTransaction();
     }
+    setCategory(transaction?.category);
   }
 
   _clearTransaction(){
     tecDescriptionTransaction.clear();
     tecAmountTransaction.clear();
+    tecDateTransaction.text = DateUtil.formatDate(DateTime.now());
+    tecHourTransaction.text = DateUtil.formatHour(DateTime.now());
+  }
+
+  TransactionModel _buildTransaction({TransactionModel? transaction}) {
+    return TransactionModel(
+      description: StringUtil().capitalize(tecDescriptionTransaction.text.trim()),
+      type: type,
+      id: transaction?.id,
+      category: categorySelected == null ? transaction!.category : categorySelected!,
+      amount: tecAmountTransaction.text.isNotEmpty
+          ? UtilBrasilFields.converterMoedaParaDouble(tecAmountTransaction.text)
+          : transaction!.amount,
+      date: tecDateTransaction.text.isNotEmpty
+          ? DateUtil.parseFromDateAndHour(tecDateTransaction.text, tecHourTransaction.text)
+          : transaction!.date,
+
+    );
   }
 }

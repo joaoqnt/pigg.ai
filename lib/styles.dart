@@ -70,13 +70,16 @@ class Styles {
     fontFamily: 'Poppins',
 
     // ✅ AppBar clean
-    appBarTheme: const AppBarTheme(
-      elevation: 2,
-      titleTextStyle: heading2,
-      toolbarTextStyle: body,
-      iconTheme: IconThemeData(color: textColor),
-      actionsIconTheme: IconThemeData(color: textColor),
-    ),
+      appBarTheme: const AppBarTheme(
+        titleTextStyle: heading2,
+        toolbarTextStyle: body,
+        iconTheme: IconThemeData(color: textColor),
+        actionsIconTheme: IconThemeData(color: textColor),
+        backgroundColor: Colors.white,
+        elevation: 4.0, // Adiciona a sombra
+        shadowColor: Colors.black54, // Cor da sombra
+        surfaceTintColor: Colors.white, // Importante para manter a cor branca
+      ),
 
     // ✅ FAB leve
     floatingActionButtonTheme: FloatingActionButtonThemeData(

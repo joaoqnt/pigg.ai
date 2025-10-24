@@ -36,7 +36,7 @@ class TransactionModel {
     'description': description,
     'type': type,
     'date': date.toIso8601String(),
-    'category_id': category.toJson(),
+    'category_id': category.id,
   };
 
   String toRawJson() => jsonEncode(toJson());

@@ -36,7 +36,14 @@ class CategoryPage extends StatelessWidget {
                 itemCount: _controller.categoriesFiltered.length,
                 itemBuilder: (context, index) {
                   final category = _controller.categoriesFiltered[index];
-                  return CategoryContainer(category: category,controller: _controller);
+                  return CategoryContainer(
+                    category: category,
+                    controller: _controller,
+                    enableLongPress: true,
+                    enableSwipeActions: true,
+                    showDeleteAction: true,
+                    showEditAction: true,
+                  );
                 },
               );
             }

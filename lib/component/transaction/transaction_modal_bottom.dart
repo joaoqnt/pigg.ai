@@ -1,24 +1,27 @@
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:piggai/component/category/category_bottom_sheet_to_transaction.dart';
+import 'package:piggai/component/category/category_dropdown.dart';
 import 'package:piggai/component/custom_choice_chip.dart';
 import 'package:piggai/component/custom_text_form_field.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:piggai/controller/transaction_controller.dart';
 import 'package:piggai/model/transaction_model.dart';
-import 'package:intl/intl.dart';
+
+import '../../util/formatter/real_input_formatter.dart';
 
 class TransactionModalBottom {
-  void show(BuildContext context, TransactionController controller, String type, {TransactionModel? transaction}) {
+  void show(BuildContext context, TransactionController controller, String type, {TransactionModel? transaction,TransactionModel? transactionClone}) {
     String description = type == "income" ? "receita" : "despesa";
-
+    controller.setTransaction(transactionClone??transaction,isClone: transactionClone != null);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return Observer(
             builder: (context) {
+              final bigSpacing = SizedBox(height: 20);
               return Form(
                 key: controller.formKey,
                 child: Padding(
@@ -48,26 +51,25 @@ class TransactionModalBottom {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
                           const Text(
                             "Registre suas despesas e receitas para melhor análise",
                             style: TextStyle(fontSize: 12),
                           ),
-                          const SizedBox(height: 20),
-
+                          SizedBox(height: 8),
                           // Descrição
                           CustomTextFormField(
                             maxLength: 50,
                             hintText: "Descrição da $description",
+                            labelText: "Descrição da $description",
                             controller: controller.tecDescriptionTransaction,
                             required: true,
                             autofocus: true,
                           ),
-                          const SizedBox(height: 16),
-
+                          bigSpacing,
                           // Valor
                           CustomTextFormField(
                             hintText: "Valor da $description",
+                            labelText: "Valor da $description",
                             controller: controller.tecAmountTransaction,
                             required: true,
                             suffixIcon: IconButton(
@@ -75,26 +77,30 @@ class TransactionModalBottom {
                               icon: const Icon(Icons.close, size: 18),
                             ),
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              CentavosInputFormatter(moeda: true)
+                              BrazilianMoneyInputFormatter()
                             ],
                             keyboardType: TextInputType.numberWithOptions(),
                           ),
-                          const SizedBox(height: 12),
-
+                          SizedBox(height: 8),
                           // Botões de valor rápido
                           _buildQuickAmounts(controller),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 8),
+                          _buildQuickAmounts(controller,add: false),
 
-                          // Linha: Categoria + Data
-                          _buildCategoryAndDateRow(context, controller, type),
-                          const SizedBox(height: 24),
-
+                          bigSpacing,
+                          CategoryDropdown(
+                            categories: controller.categories.where((element) => element.type == type,).toList(),
+                            onChanged: (p0) => controller.setCategory(p0),
+                            categorySelected: controller.categorySelected,
+                          ),
+                          bigSpacing,
+                          _buildRowDateHour(context, controller, type),
+                          bigSpacing,
                           // Botão de salvar
                           ElevatedButton(
                             onPressed: () async {
                               if(controller.formKey.currentState!.validate() && !controller.isInserting){
-                                // await controller.saveTransaction(transaction: transaction);
+                                await controller.alterTransaction(transaction: transaction);
                               }
                             },
                             child: controller.isInserting
@@ -119,152 +125,58 @@ class TransactionModalBottom {
     );
   }
 
-  Widget _buildQuickAmounts(TransactionController controller) {
+  Widget _buildQuickAmounts(TransactionController controller, {bool add = true}) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: [
-        for (final value in [0.5, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0])
+        for (final value in [0.5, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0, 500.0])
           CustomChoiceChip(
-            text: "+ ${UtilBrasilFields.obterReal(value)}",
+            text: "${add == true ? "+" : "-"} ${UtilBrasilFields.obterReal(value)}",
             selected: false,
             onSelected: (p0) {
-              controller.addAmount(value);
+              if(add) {
+                controller.addAmount(value);
+              } else {
+                controller.removeAmount(value);
+              }
             },
           ),
       ],
     );
   }
 
-  Widget _buildCategoryAndDateRow(BuildContext context, TransactionController controller, String type) {
+  Widget _buildRowDateHour(BuildContext context, TransactionController controller, String type) {
     return Row(
+      spacing: 12,
       children: [
-        // Categoria - 70% da largura
         Expanded(
           flex: 7,
-          child: _buildCategorySelector(context, controller, type),
+          child: CustomTextFormField(
+            controller: controller.tecDateTransaction,
+            hintText: "Data",
+            labelText: "Data",
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              DataInputFormatter()
+            ],
+            keyboardType: TextInputType.datetime,
+          ),
         ),
-        const SizedBox(width: 12),
-
-        // Data - 30% da largura
         Expanded(
           flex: 3,
-          child: _buildDateSelector(context, controller),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCategorySelector(BuildContext context, TransactionController controller, String type) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Categoria",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          width: double.infinity,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: () => CategoryBottomSheetToTransaction().show(context, controller, type),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Observer(builder: (context) {
-                    final category = null;
-                    return Expanded(
-                      child: Text(
-                        category?.name ?? "Selecionar",
-                        style: TextStyle(
-                          color: category == null ? Colors.grey[600] : Colors.black87,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }),
-                  const Icon(Icons.arrow_drop_down, size: 20, color: Colors.grey),
-                ],
-              ),
-            ),
+          child: CustomTextFormField(
+            controller: controller.tecHourTransaction,
+            hintText: "Hora",
+            labelText: "Hora",
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              HoraInputFormatter()
+            ],
+            keyboardType: TextInputType.datetime,
           ),
         ),
       ],
     );
-  }
-
-  Widget _buildDateSelector(BuildContext context, TransactionController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Data",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: () => _showDatePicker(context, controller),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Observer(builder: (context) {
-                    final date = DateTime.now();
-                    return Expanded(
-                      child: Text(
-                        DateFormat('dd/MM').format(date),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    );
-                  }),
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showDatePicker(BuildContext context, TransactionController controller) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      // initialDate: controller.selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF4B4EA0), // Sua cor primária
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      // controller.setSelectedDate(picked);
-    }
   }
 }
