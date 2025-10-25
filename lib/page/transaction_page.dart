@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:piggai/component/category/category_circle.dart';
+import 'package:piggai/component/custom_choice_chip.dart';
 import 'package:piggai/component/transaction/transaction_container.dart';
 import 'package:piggai/component/transaction/transaction_modal_bottom.dart';
 import 'package:piggai/controller/transaction_controller.dart';
@@ -47,28 +48,36 @@ class TransactionPage extends StatelessWidget {
             return Observer(
               builder: (context) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Filtrar categoria"),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              spacing: 10,
-                              children: [
-                                for(int i = 0; i < _controller.categories.length; i++)
-                                  CategoryCircle(
-                                    category: _controller.categories[i],
-                                    isSelected: _controller.categoryFilterSelected[_controller.categories[i]],
-                                    onTap: () => _controller.setCategoryFilter(_controller.categories[i]),
-                                  )
-                              ],
-                            ),
-                          ),
-                        ],
+                      padding: const EdgeInsets.only(top: 20,left: 20,right: 20),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          spacing: 10,
+                          children: [
+                            for(int i = 0; i < 3; i++)
+                              CustomChoiceChip(text: "Mês atual", selected: true)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          spacing: 10,
+                          children: [
+                            for(int i = 0; i < _controller.categories.length; i++)
+                              CategoryCircle(
+                                category: _controller.categories[i],
+                                isSelected: _controller.categoryFilterSelected[_controller.categories[i]],
+                                onTap: () => _controller.setCategoryFilter(_controller.categories[i]),
+                              )
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(

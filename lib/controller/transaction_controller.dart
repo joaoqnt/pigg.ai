@@ -224,6 +224,7 @@ abstract class _TransactionController with Store{
       DateTime date = isClone ? DateTime.now() : transaction.date;
       tecDateTransaction.text = DateUtil.formatDate(date);
       tecHourTransaction.text = DateUtil.formatHour(date);
+      type = transaction.type;
     } else {
       _clearTransaction();
     }
@@ -235,6 +236,7 @@ abstract class _TransactionController with Store{
     tecAmountTransaction.clear();
     tecDateTransaction.text = DateUtil.formatDate(DateTime.now());
     tecHourTransaction.text = DateUtil.formatHour(DateTime.now());
+    type = "expense";
   }
 
   TransactionModel _buildTransaction({TransactionModel? transaction}) {
