@@ -6,7 +6,6 @@ import 'package:mobx/mobx.dart';
 import 'package:piggai/component/custom_snackbar.dart';
 import 'package:piggai/database/database_dao.dart';
 import 'package:piggai/model/transaction_model.dart';
-import 'package:piggai/util/color_util.dart';
 import 'package:piggai/util/date_util.dart';
 import 'package:piggai/util/string_util.dart';
 
@@ -43,7 +42,7 @@ abstract class _TransactionController with Store{
 
   Future<List<TransactionModel>> initialize(BuildContext context) async{
     _context = context;
-    _getCategories();
+    await _getCategories();
     return await getTransactions();
   }
 

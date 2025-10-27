@@ -50,36 +50,6 @@ class TransactionPage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20,left: 20,right: 20),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            for(int i = 0; i < 3; i++)
-                              CustomChoiceChip(text: "Mês atual", selected: true)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            for(int i = 0; i < _controller.categories.length; i++)
-                              CategoryCircle(
-                                category: _controller.categories[i],
-                                isSelected: _controller.categoryFilterSelected[_controller.categories[i]],
-                                onTap: () => _controller.setCategoryFilter(_controller.categories[i]),
-                              )
-                          ],
-                        ),
-                      ),
-                    ),
                     Expanded(
                         child: ListView.builder(
                           padding: const EdgeInsets.only(bottom: 80),
