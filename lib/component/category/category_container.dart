@@ -34,47 +34,41 @@ class CategoryContainer extends StatelessWidget {
     return Observer(
         builder: (context) {
           // Widget base do container
-          Widget container = Material(
-            color: Colors.white,
-            child: InkWell(
-              onTap: onTap,
-              onLongPress: enableLongPress ? () => _showLongPressDialog(context) : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
-                ),
-                child: Row(
-                  children: [
-                    CustomContainer(
-                      backgroundColor: ColorUtil().formatColor(category.color),
-                      iconColor: ColorUtil().darken(ColorUtil().formatColor(category.color), 0.3),
-                      isLoading: controller?.isDeleting[category],
-                      iconData: Icons.category_outlined,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            category.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+          Widget container = InkWell(
+            onTap: onTap,
+            onLongPress: enableLongPress ? () => _showLongPressDialog(context) : null,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Row(
+                children: [
+                  CustomContainer(
+                    backgroundColor: ColorUtil().formatColor(category.color),
+                    iconColor: ColorUtil().darken(ColorUtil().formatColor(category.color), 0.3),
+                    isLoading: controller?.isDeleting[category],
+                    iconData: Icons.category_outlined,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            category.type == 'income' ? 'Receita' : 'Despesa',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          category.type == 'income' ? 'Receita' : 'Despesa',
+                          style: const TextStyle(
+                            fontSize: 12,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -98,16 +92,18 @@ class CategoryContainer extends StatelessWidget {
   }
 
   List<Widget> _buildSwipeActions(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final actions = <Widget>[];
 
     if (showEditAction) {
       actions.add(
         SlidableAction(
-          onPressed: (_) {
-            _editCategory(context);
-          },
-          backgroundColor: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(12),
+          onPressed: (_) => _editCategory(context),
+          backgroundColor: colorScheme.tertiaryContainer,
+          foregroundColor: colorScheme.onTertiaryContainer,
           icon: Icons.edit_outlined,
+          label: "Editar",
         ),
       );
     }
@@ -115,17 +111,19 @@ class CategoryContainer extends StatelessWidget {
     if (showDeleteAction) {
       actions.add(
         SlidableAction(
-          onPressed: (_) async {
-            _deleteCategory(context);
-          },
-          backgroundColor: Colors.redAccent.shade200,
+          borderRadius: BorderRadius.circular(12),
+          onPressed: (_) async => _deleteCategory(context),
+          backgroundColor: colorScheme.errorContainer,
+          foregroundColor: colorScheme.onErrorContainer,
           icon: Icons.delete_outlined,
+          label: "Excluir",
         ),
       );
     }
 
     return actions;
   }
+
 
   void _showLongPressDialog(BuildContext context) {
     final options = <BlurDialogOption>[];
@@ -135,9 +133,7 @@ class CategoryContainer extends StatelessWidget {
         BlurDialogOption(
           label: 'Editar',
           icon: Icons.edit,
-          iconColor: Colors.black54,
           onTap: () {
-            Navigator.pop(context);
             _editCategory(context);
           },
         ),

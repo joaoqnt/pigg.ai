@@ -59,6 +59,7 @@ class CategoryModalBottom {
                               controller: controller.tecNameCategory,
                               required: true,
                               autofocus: true,
+                              prefixIcon: Icon(Icons.description),
                             ),
                           ),
                           CategoryColorPicker(controller: controller)
@@ -66,19 +67,25 @@ class CategoryModalBottom {
                       ),
                       CategoryTypeSelector(controller: controller),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () async{
-                          if(controller.formKey.currentState!.validate() && !controller.isInserting){
-                            await controller.alterCategory(category: category);
-                          }
-                        },
-                        child: controller.isInserting ? Center(
-                            child: SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(color: Colors.white)
-                            )
-                        ) : Text("${category == null ? "Criar" : "Editar"} categoria"),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FilledButton(
+                              onPressed: () async{
+                                if(controller.formKey.currentState!.validate() && !controller.isInserting){
+                                  await controller.alterCategory(category: category);
+                                }
+                              },
+                              child: controller.isInserting ? Center(
+                                  child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(color: Colors.white)
+                                  )
+                              ) : Text("${category == null ? "Criar" : "Editar"} categoria"),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

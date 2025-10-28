@@ -29,12 +29,11 @@ class CategoryDropdown extends StatelessWidget {
       },
       decoratorProps: DropDownDecoratorProps(
           decoration: InputDecoration(
-              hintText: "Categoria",
-              labelText: "Categoria",
-              isDense: true,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12)
-              )
+            hintText: "Categoria",
+            labelText: "Categoria",
+            isDense: true,
+            border: UnderlineInputBorder(),
+            prefixIcon: Icon(Icons.category)
           )
       ),
     );

@@ -10,6 +10,7 @@ import 'package:piggai/controller/transaction_controller.dart';
 import 'package:piggai/model/transaction_model.dart';
 import 'package:piggai/util/color_util.dart';
 import 'package:piggai/util/date_util.dart';
+import 'package:piggai/util/responsive.dart';
 
 class TransactionContainer extends StatelessWidget {
   final TransactionModel transaction;
@@ -29,136 +30,163 @@ class TransactionContainer extends StatelessWidget {
           key: ValueKey(transaction.id),
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
-            extentRatio: 0.4,
+            extentRatio: 0.5,
             children: [
               SlidableAction(
+                borderRadius: BorderRadius.circular(12),
                 onPressed: (_) {
-                  TransactionModalBottom().show(context, controller, transaction.type,transactionClone: transaction);
-                },
-                backgroundColor: Colors.grey.shade100,
-                icon: Icons.copy,
-              ),
-              SlidableAction(
-                onPressed: (_) {
-                  TransactionModalBottom().show(context, controller, transaction.type,transaction: transaction);
-                },
-                backgroundColor: Colors.grey.shade200,
-                icon: Icons.edit_outlined,
-              ),
-              SlidableAction(
-                onPressed: (_) async {
-                  CustomDeleteDialog.show(
-                      context,
-                      onPressed: () {
-                        Navigator.pop(context);
-                        controller.alterTransaction(transaction: transaction,isDelete: true);
-                      }
+                  TransactionModalBottom().show(
+                    context,
+                    controller,
+                    transaction.type,
+                    transactionClone: transaction,
                   );
                 },
-                backgroundColor: Colors.redAccent.shade200,
+                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                icon: Icons.copy,
+                label: Responsive.isMobile(context) ? null :'Duplicar',
+              ),
+              SlidableAction(
+                borderRadius: BorderRadius.circular(12),
+                onPressed: (_) {
+                  TransactionModalBottom().show(
+                    context,
+                    controller,
+                    transaction.type,
+                    transaction: transaction,
+                  );
+                },
+                backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+                foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
+                icon: Icons.edit_outlined,
+                label: Responsive.isMobile(context) ? null :'Editar',
+              ),
+              SlidableAction(
+                borderRadius: BorderRadius.circular(12),
+                onPressed: (_) async {
+                  CustomDeleteDialog.show(
+                    context,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      controller.alterTransaction(
+                        transaction: transaction,
+                        isDelete: true,
+                      );
+                    },
+                  );
+                },
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
                 icon: Icons.delete_outline,
+                label: Responsive.isMobile(context) ? null :'Excluir',
               ),
             ],
           ),
-          child: Material(
-            color: Colors.white,
-            child: InkWell(
-              onTap: () {
-                // ação ao tocar
-              },
-              onLongPress: () {
-                CustomBlurDialog.show(
-                  context: context,
-                  mainContent: TransactionContainer(
-                    transaction: transaction,
-                    controller: controller,
+          child: InkWell(
+            onTap: () {
+              TransactionModalBottom().show(context, controller, transaction.type, transaction: transaction);
+            },
+            onLongPress: () {
+              CustomBlurDialog.show(
+                context: context,
+                mainContent: TransactionContainer(
+                  transaction: transaction,
+                  controller: controller,
+                ),
+                options: [
+                  BlurDialogOption(
+                    label: 'Duplicar',
+                    icon: Icons.copy,
+                    iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                    onTap: () {
+                      TransactionModalBottom().show(context, controller, transaction.type, transactionClone: transaction);
+                    },
                   ),
-                  options: [
-                    BlurDialogOption(
-                      label: 'Duplicar',
-                      icon: Icons.copy,
-                      iconColor: Colors.black54,
-                      onTap: () {
-                        TransactionModalBottom().show(context, controller, transaction.type,transactionClone: transaction);
-                      },
-                    ),
-                    BlurDialogOption(
-                      label: 'Editar',
-                      icon: Icons.edit,
-                      iconColor: Colors.black54,
-                      onTap: () {
-                        TransactionModalBottom().show(context, controller, transaction.type,transaction: transaction);
-                      },
-                    ),
-                    BlurDialogOption(
-                      label: 'Excluir',
-                      icon: Icons.delete,
-                      iconColor: Colors.redAccent,
-                      textColor: Colors.redAccent,
-                      fontWeight: FontWeight.bold,
-                      onTap: () {
-                        CustomDeleteDialog.show(
-                          context,
-                          onPressed: () {
-                            Navigator.pop(context);
-                            controller.alterTransaction(transaction: transaction,isDelete: true);
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
-                ),
-                child: Row(
-                  spacing: 10,
-                  children: [
-                    CustomContainer(
-                      backgroundColor: ColorUtil().formatColor(transaction.category.color),
-                      iconColor: ColorUtil().darken(ColorUtil().formatColor(transaction.category.color), 0.3),
-                      isLoading: controller.isDeleting[transaction],
-                      iconData: transaction.type == "income" ? Icons.attach_money : Icons.money_off,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            transaction.description,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                  BlurDialogOption(
+                    label: 'Editar',
+                    icon: Icons.edit,
+                    iconColor: Theme.of(context).colorScheme.primary,
+                    onTap: () {
+                      TransactionModalBottom().show(context, controller, transaction.type, transaction: transaction);
+                    },
+                  ),
+                  BlurDialogOption(
+                    label: 'Excluir',
+                    icon: Icons.delete,
+                    iconColor: Theme.of(context).colorScheme.error,
+                    textColor: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                    onTap: () {
+                      CustomDeleteDialog.show(
+                        context,
+                        onPressed: () {
+                          Navigator.pop(context);
+                          controller.alterTransaction(transaction: transaction, isDelete: true);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                spacing: 10,
+                children: [
+                  CustomContainer(
+                    backgroundColor: ColorUtil().formatColor(transaction.category.color),
+                    iconColor: ColorUtil().darken(ColorUtil().formatColor(transaction.category.color), 0.3),
+                    isLoading: controller.isDeleting[transaction],
+                    iconData: transaction.type == "income" ? Icons.arrow_downward : Icons.arrow_upward,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          transaction.description,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
-                          Text(
-                            DateUtil.formatDateTime(transaction.date),
-                            style: TextStyle(
-                              fontSize: 12,
-                            ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          transaction.category.name,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
-                      decoration: BoxDecoration(
-                        color: transaction.type == 'income' ? Colors.green.shade50 : Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(20)
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: transaction.type == 'income'
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : Theme.of(context).colorScheme.errorContainer,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          UtilBrasilFields.obterReal(transaction.amount),
+                          style: TextStyle(
+                            color: transaction.type == 'income'
+                                ? Theme.of(context).colorScheme.onPrimaryContainer
+                                : Theme.of(context).colorScheme.onErrorContainer,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      child: Text(UtilBrasilFields.obterReal(transaction.amount),
-                        style: TextStyle(
-                            color: transaction.type == 'income' ? Colors.green : Colors.red,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold
-                        )
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

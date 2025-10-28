@@ -17,14 +17,14 @@ class CustomContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 40,
+      width: 50,
+      height: 50,
       decoration: BoxDecoration(
           color: backgroundColor,
-          shape: BoxShape.circle,
-          border: Border.all(
-              color: iconColor
-          )
+          // shape: BoxShape.circle,
+          // border: Border.all(
+          //     color: iconColor
+          // )
       ),
       child: isLoading == true ? Container(
         alignment: Alignment.center,

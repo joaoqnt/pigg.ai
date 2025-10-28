@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:piggai/component/category/category_circle.dart';
-import 'package:piggai/component/custom_choice_chip.dart';
 import 'package:piggai/component/transaction/transaction_container.dart';
+import 'package:piggai/component/transaction/transaction_list_by_day.dart';
 import 'package:piggai/component/transaction/transaction_modal_bottom.dart';
+import 'package:piggai/component/transaction/transaction_summary_card.dart';
 import 'package:piggai/controller/transaction_controller.dart';
-import 'package:piggai/util/color_util.dart';
+import 'package:piggai/util/date_util.dart';
 
 class TransactionPage extends StatelessWidget {
   TransactionPage({super.key});
@@ -15,7 +15,7 @@ class TransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text("Minhas finanças"),),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
@@ -23,7 +23,7 @@ class TransactionPage extends StatelessWidget {
         label: Text("Criar finança"),
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Bordas menos arredondadas
+          borderRadius: BorderRadius.circular(12),
         ),
         children: [
           SpeedDialChild(
@@ -47,22 +47,16 @@ class TransactionPage extends StatelessWidget {
           builder: (context, snapshot) {
             return Observer(
               builder: (context) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(bottom: 80),
-                          itemCount: _controller.transactionsFiltered.length,
-                          itemBuilder: (context, index) {
-                            return TransactionContainer(
-                                transaction: _controller.transactionsFiltered[index],
-                                controller: _controller
-                            );
-                          },
-                        )
-                    )
-                  ],
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TransactionSummaryCard(expense: 200,income: 100,),
+                      for(int i = 0; i < _controller.datesOfTransactions.length; i++)
+                        TransactionListByDay(dateTime: _controller.datesOfTransactions[i], controller: _controller),
+                      SizedBox(height: 80,)
+                    ],
+                  ),
                 );
               }
             );
@@ -70,4 +64,5 @@ class TransactionPage extends StatelessWidget {
       ),
     );
   }
+
 }

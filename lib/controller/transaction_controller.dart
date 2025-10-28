@@ -28,6 +28,8 @@ abstract class _TransactionController with Store{
   late BuildContext _context;
   int offset = 0;
   @observable
+  ObservableList<DateTime> datesOfTransactions = ObservableList.of([]);
+  @observable
   String type = "expense";
   @observable
   bool isInserting = false;
@@ -39,6 +41,8 @@ abstract class _TransactionController with Store{
   CategoryModel? categorySelected;
   @observable
   ObservableList<TransactionModel> transactionsFiltered = ObservableList.of([]);
+  @observable
+  Map<String,String> mapFilterDateTransaction = ObservableMap.of({});
 
   Future<List<TransactionModel>> initialize(BuildContext context) async{
     _context = context;
@@ -87,6 +91,7 @@ abstract class _TransactionController with Store{
       }
 
       transactionsFiltered.addAll(_transactions);
+      _getDistinctDates();
       return transactionsFiltered;
     } catch (e, stacktrace) {
       print('Erro ao buscar transações: $e');
@@ -105,6 +110,15 @@ abstract class _TransactionController with Store{
     });
     // offset++;
     return categories;
+  }
+
+  _getDistinctDates(){
+    datesOfTransactions.clear();
+    transactionsFiltered.forEach((element) {
+      if(!datesOfTransactions.contains(element.date)){
+        datesOfTransactions.add(element.date);
+      }
+    });
   }
 
   @action
@@ -216,7 +230,7 @@ abstract class _TransactionController with Store{
     }
   }
 
-  setTransaction(TransactionModel? transaction, {bool isClone = false}){
+  setTransaction(TransactionModel? transaction, String type, {bool isClone = false}){
     if(transaction != null){
       tecDescriptionTransaction.text = transaction.description;
       tecAmountTransaction.text = UtilBrasilFields.obterReal(transaction.amount);
@@ -224,18 +238,19 @@ abstract class _TransactionController with Store{
       tecDateTransaction.text = DateUtil.formatDate(date);
       tecHourTransaction.text = DateUtil.formatHour(date);
       type = transaction.type;
+      setCategory(transaction.category);
     } else {
-      _clearTransaction();
+      _clearTransaction(type);
     }
-    setCategory(transaction?.category);
   }
 
-  _clearTransaction(){
+  _clearTransaction(String type){
     tecDescriptionTransaction.clear();
     tecAmountTransaction.clear();
     tecDateTransaction.text = DateUtil.formatDate(DateTime.now());
     tecHourTransaction.text = DateUtil.formatHour(DateTime.now());
-    type = "expense";
+    this.type = type;
+    setCategory(categories.where((element) => element.type == type).firstOrNull);
   }
 
   TransactionModel _buildTransaction({TransactionModel? transaction}) {
@@ -248,7 +263,7 @@ abstract class _TransactionController with Store{
           ? UtilBrasilFields.converterMoedaParaDouble(tecAmountTransaction.text)
           : transaction!.amount,
       date: tecDateTransaction.text.isNotEmpty
-          ? DateUtil.parseFromDateAndHour(tecDateTransaction.text, tecHourTransaction.text)
+          ? DateUtil.parse(tecDateTransaction.text)
           : transaction!.date,
 
     );

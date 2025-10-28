@@ -102,4 +102,34 @@ class DateUtil {
 
   /// Auxiliar para garantir 2 dígitos
   static String _twoDigits(int n) => n.toString().padLeft(2, '0');
+
+  static String dayOfWeekName(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final targetDate = DateTime(date.year, date.month, date.day);
+
+    if (targetDate == today) return 'Hoje';
+    if (targetDate == today.subtract(Duration(days: 1))) return 'Ontem';
+    if (targetDate == today.add(Duration(days: 1))) return 'Amanhã';
+
+    switch (date.weekday) {
+      case DateTime.monday:
+        return 'Segunda-feira';
+      case DateTime.tuesday:
+        return 'Terça-feira';
+      case DateTime.wednesday:
+        return 'Quarta-feira';
+      case DateTime.thursday:
+        return 'Quinta-feira';
+      case DateTime.friday:
+        return 'Sexta-feira';
+      case DateTime.saturday:
+        return 'Sábado';
+      case DateTime.sunday:
+        return 'Domingo';
+      default:
+        return '';
+    }
+  }
+
 }

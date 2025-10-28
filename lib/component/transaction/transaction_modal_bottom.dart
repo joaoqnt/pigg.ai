@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piggai/component/category/category_dropdown.dart';
 import 'package:piggai/component/custom_choice_chip.dart';
+import 'package:piggai/component/custom_date_picker.dart';
 import 'package:piggai/component/custom_text_form_field.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:piggai/controller/transaction_controller.dart';
@@ -14,14 +15,18 @@ import '../../util/formatter/real_input_formatter.dart';
 class TransactionModalBottom {
   void show(BuildContext context, TransactionController controller, String type, {TransactionModel? transaction,TransactionModel? transactionClone}) {
     String description = type == "income" ? "receita" : "despesa";
-    controller.setTransaction(transactionClone??transaction,isClone: transactionClone != null);
+    controller.setTransaction(
+        transactionClone??transaction,
+        type,
+        isClone: transactionClone != null
+    );
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return Observer(
             builder: (context) {
-              final bigSpacing = SizedBox(height: 20);
+              final bigSpacing = SizedBox(height: 10);
               return Form(
                 key: controller.formKey,
                 child: Padding(
@@ -59,16 +64,17 @@ class TransactionModalBottom {
                           // Descrição
                           CustomTextFormField(
                             maxLength: 50,
-                            hintText: "Descrição da $description",
+                            hintText: "Restaurante",
                             labelText: "Descrição da $description",
                             controller: controller.tecDescriptionTransaction,
                             required: true,
                             autofocus: true,
+                            prefixIcon: Icon(Icons.description),
                           ),
                           bigSpacing,
                           // Valor
                           CustomTextFormField(
-                            hintText: "Valor da $description",
+                            hintText: "${UtilBrasilFields.obterReal(50)}",
                             labelText: "Valor da $description",
                             controller: controller.tecAmountTransaction,
                             required: true,
@@ -80,6 +86,7 @@ class TransactionModalBottom {
                               BrazilianMoneyInputFormatter()
                             ],
                             keyboardType: TextInputType.numberWithOptions(),
+                            prefixIcon: Icon(Icons.attach_money),
                           ),
                           SizedBox(height: 8),
                           // Botões de valor rápido
@@ -94,24 +101,30 @@ class TransactionModalBottom {
                             categorySelected: controller.categorySelected,
                           ),
                           bigSpacing,
-                          _buildRowDateHour(context, controller, type),
+                          CustomDatePicker(controller: controller.tecDateTransaction),
                           bigSpacing,
                           // Botão de salvar
-                          ElevatedButton(
-                            onPressed: () async {
-                              if(controller.formKey.currentState!.validate() && !controller.isInserting){
-                                await controller.alterTransaction(transaction: transaction);
-                              }
-                            },
-                            child: controller.isInserting
-                                ? const Center(
-                              child: SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(color: Colors.white),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: FilledButton(
+                                  onPressed: () async {
+                                    if(controller.formKey.currentState!.validate() && !controller.isInserting){
+                                      await controller.alterTransaction(transaction: transaction);
+                                    }
+                                  },
+                                  child: controller.isInserting
+                                      ? const Center(
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(color: Colors.white),
+                                    ),
+                                  )
+                                      : Text("${transaction == null ? "Criar" : "Editar"} $description"),
+                                ),
                               ),
-                            )
-                                : Text("${transaction == null ? "Criar" : "Editar"} $description"),
+                            ],
                           ),
                         ],
                       ),
@@ -142,40 +155,6 @@ class TransactionModalBottom {
               }
             },
           ),
-      ],
-    );
-  }
-
-  Widget _buildRowDateHour(BuildContext context, TransactionController controller, String type) {
-    return Row(
-      spacing: 12,
-      children: [
-        Expanded(
-          flex: 7,
-          child: CustomTextFormField(
-            controller: controller.tecDateTransaction,
-            hintText: "Data",
-            labelText: "Data",
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              DataInputFormatter()
-            ],
-            keyboardType: TextInputType.datetime,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: CustomTextFormField(
-            controller: controller.tecHourTransaction,
-            hintText: "Hora",
-            labelText: "Hora",
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              HoraInputFormatter()
-            ],
-            keyboardType: TextInputType.datetime,
-          ),
-        ),
       ],
     );
   }

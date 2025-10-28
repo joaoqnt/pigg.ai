@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:piggai/styles.dart';
 
 class CustomChoiceChip extends StatelessWidget {
   final String text;
@@ -15,9 +14,14 @@ class CustomChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primary = Styles.primaryColor.withOpacity(0.5);
-    final Color background = selected ? primary : Colors.grey.shade200;
-    final Color textColor = selected ? Colors.white : Colors.grey.shade600;
+    final colorScheme = Theme.of(context).colorScheme;
+    final primary = colorScheme.primary;
+    final surface = colorScheme.surface;
+    final onSurface = colorScheme.onSurface;
+    final outline = colorScheme.outlineVariant;
+
+    final background = selected ? primary : surface.withOpacity(0.9);
+    final textColor = selected ? colorScheme.onPrimary : onSurface.withOpacity(0.8);
 
     return InkWell(
       borderRadius: BorderRadius.circular(20),
@@ -25,17 +29,30 @@ class CustomChoiceChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: background,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? primary.withOpacity(0.2) : outline.withOpacity(0.4),
+          ),
+          boxShadow: selected
+              ? [
+            BoxShadow(
+              color: primary.withOpacity(0.25),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            )
+          ]
+              : null,
         ),
         child: Text(
           text,
           style: TextStyle(
-            fontSize: 10,
+            fontSize: 11,
             color: textColor,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            letterSpacing: 0.2,
           ),
         ),
       ),

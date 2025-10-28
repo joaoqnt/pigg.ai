@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:piggai/styles.dart';
 import 'package:piggai/controller/category_controller.dart';
 
 class CategoryTypeSelector extends StatelessWidget {
@@ -20,9 +19,9 @@ class CategoryTypeSelector extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              _buildOption("expense", "Despesa", Icons.trending_down_rounded),
+              _buildOption("expense", "Despesa", Icons.trending_down_rounded, context),
               const SizedBox(width: 10),
-              _buildOption("income", "Receita", Icons.trending_up_rounded),
+              _buildOption("income", "Receita", Icons.trending_up_rounded, context),
             ],
           ),
         ],
@@ -30,8 +29,26 @@ class CategoryTypeSelector extends StatelessWidget {
     });
   }
 
-  Widget _buildOption(String type, String title, IconData icon) {
+  Widget _buildOption(String type, String title, IconData icon, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool selected = controller.type == type;
+
+    // Cores derivadas do tema
+    final backgroundColor = selected
+        ? colorScheme.primaryContainer
+        : colorScheme.surfaceContainerLow;
+
+    final borderColor = selected
+        ? colorScheme.primary
+        : Colors.transparent;
+
+    final iconColor = selected
+        ? colorScheme.onPrimaryContainer
+        : colorScheme.onSurfaceVariant;
+
+    final textColor = selected
+        ? colorScheme.onPrimaryContainer
+        : colorScheme.onSurface;
 
     return Expanded(
       child: GestureDetector(
@@ -41,31 +58,20 @@ class CategoryTypeSelector extends StatelessWidget {
           curve: Curves.easeOutCubic,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           decoration: BoxDecoration(
-            color: selected
-                ? Styles.secondaryColor.withOpacity(0.12)
-                : Colors.grey.shade100,
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: selected
-                  ? Styles.secondaryColor.withOpacity(0.5)
-                  : Colors.transparent,
-              width: 1.2,
-            ),
+            border: Border.all(color: borderColor, width: 1.2),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 18,
-                color: selected ? Styles.primaryColor : Colors.grey.shade600,
-              ),
+              Icon(icon, size: 18, color: iconColor),
               const SizedBox(width: 6),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  color: selected ? Styles.primaryColor : Colors.black87,
+                  color: textColor,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),

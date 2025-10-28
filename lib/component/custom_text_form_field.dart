@@ -30,7 +30,8 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextInputAction? textInputAction;
   final bool enabled;
-  final bool autofocus; // 👈 novo parâmetro
+  final bool autofocus;
+  final bool readOnly;
   final int? maxLines;
   final int? minLines;
   final int? maxLength;
@@ -40,6 +41,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool required;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
+  final void Function()? onTap;
 
   // Preenchimento
   final bool? filled;
@@ -66,7 +68,8 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction,
     this.enabled = true,
-    this.autofocus = false, // 👈 valor padrão
+    this.autofocus = false,
+    this.readOnly = false,
     this.maxLines = 1,
     this.minLines,
     this.maxLength,
@@ -77,6 +80,7 @@ class CustomTextFormField extends StatelessWidget {
     this.filled,
     this.fillColor,
     this.inputFormatters,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -89,11 +93,13 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       enabled: enabled,
-      autofocus: autofocus, // 👈 aqui aplicamos o foco automático
+      autofocus: autofocus,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
       onChanged: onChanged,
+      readOnly: readOnly,
+      onTap: onTap,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator ?? (required ? _defaultValidator : null),
       inputFormatters: inputFormatters,
@@ -104,7 +110,7 @@ class CustomTextFormField extends StatelessWidget {
         labelStyle: labelStyle,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        border: border,
+        border: border??UnderlineInputBorder(),
         focusedBorder: focusedBorder,
         enabledBorder: enabledBorder,
         errorBorder: errorBorder,

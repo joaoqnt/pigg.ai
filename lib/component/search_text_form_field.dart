@@ -20,14 +20,14 @@ class SearchTextFormField extends StatelessWidget {
         controller: controller,
         hintText: "Buscar...",
         obscureText: false,
-        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+        prefixIcon: const Icon(Icons.search),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20), // cantos arredondados
           borderSide: BorderSide.none, // sem borda externa
         ),
         filled: true,
-        fillColor: Colors.grey.shade200,
-        onChanged: onChanged
+          fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+          onChanged: onChanged
       ),
     );
   }

@@ -1,20 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-/// 🧊 Classe genérica para exibir um diálogo com fundo borrado
-/// e opções personalizadas abaixo de um widget principal.
-///
-/// Exemplo de uso:
-/// ```dart
-/// CustomBlurDialog.show(
-///   context: context,
-///   mainContent: MyWidget(),
-///   options: [
-///     BlurDialogOption(label: 'Editar', icon: Icons.edit, onTap: () {}),
-///     BlurDialogOption(label: 'Excluir', icon: Icons.delete, onTap: () {}),
-///   ],
-/// );
-/// ```
 class CustomBlurDialog {
   static void show({
     required BuildContext context,
@@ -24,7 +10,7 @@ class CustomBlurDialog {
     double blurSigma = 8,
     double scale = 1.05,
     Color backgroundColor = const Color.fromRGBO(0, 0, 0, 0.15),
-    Color menuColor = Colors.white,
+    // Color menuColor = Colors.white,
     double borderRadius = 16,
     Duration transitionDuration = const Duration(milliseconds: 200),
     bool barrierDismissible = true,
@@ -81,7 +67,7 @@ class CustomBlurDialog {
 
                         // 🔸 Menu de opções
                         Material(
-                          color: menuColor,
+                          // color: menuColor,
                           borderRadius: BorderRadius.circular(borderRadius),
                           elevation: 6,
                           child: Column(
