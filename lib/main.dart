@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/page/bottom_navigation_page.dart';
-import 'package:piggai/theme/theme.dart';
+import 'package:piggai/theme/app_theme.dart';
 import 'package:piggai/theme/util_theme.dart';
 
 void main() {
@@ -12,13 +12,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = createTextTheme(context, "Inter", "Roboto");
-    MaterialTheme theme = MaterialTheme(textTheme);
 
     return MaterialApp(
       title: 'Pigg.ai',
-      theme: theme.light(),
-      darkTheme: theme.dark(),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
       home: const BottomNavigationPage(),
     );

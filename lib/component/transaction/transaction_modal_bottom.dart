@@ -114,11 +114,11 @@ class TransactionModalBottom {
                                     }
                                   },
                                   child: controller.isInserting
-                                      ? const Center(
+                                      ? Center(
                                     child: SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(color: Colors.white),
+                                      child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary),
                                     ),
                                   )
                                       : Text("${transaction == null ? "Criar" : "Editar"} $description"),

@@ -23,7 +23,7 @@ class TransactionListByDay extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text("${DateUtil.dayOfWeekName(dateTime)}, ${dateTime.day.toString().padLeft(2,'0')}",
-            style: TextStyle(fontWeight: FontWeight.w500)
+            style: TextStyle(fontWeight: FontWeight.bold)
           ),
         ),
         for(int i = 0; i < transactions.length; i++)

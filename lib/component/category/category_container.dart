@@ -149,7 +149,6 @@ class CategoryContainer extends StatelessWidget {
           textColor: Colors.redAccent,
           fontWeight: FontWeight.bold,
           onTap: () {
-            Navigator.pop(context);
             _deleteCategory(context);
           },
         ),

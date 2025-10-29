@@ -46,6 +46,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),

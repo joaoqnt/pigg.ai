@@ -21,10 +21,7 @@ class CustomContainer extends StatelessWidget {
       height: 50,
       decoration: BoxDecoration(
           color: backgroundColor,
-          // shape: BoxShape.circle,
-          // border: Border.all(
-          //     color: iconColor
-          // )
+          borderRadius: BorderRadius.circular(6)
       ),
       child: isLoading == true ? Container(
         alignment: Alignment.center,
