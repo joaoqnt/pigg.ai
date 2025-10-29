@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'theme_light.dart';
 import 'theme_dark.dart';
 
@@ -13,16 +15,19 @@ class AppTheme {
     scaffoldBackgroundColor: scheme.surface,
     canvasColor: scheme.surface,
 
-    textTheme: Typography.material2021().black.apply(
+    textTheme: GoogleFonts.poppinsTextTheme().apply(
       bodyColor: scheme.onSurface,
       displayColor: scheme.onSurface,
     ),
+
 
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
       foregroundColor: scheme.onSurface,
+      centerTitle: true,
+      titleTextStyle: TextStyle(fontSize: 14,color: scheme.onSurface)
     ),
 
     cardTheme: CardThemeData(
@@ -34,7 +39,7 @@ class AppTheme {
     ),
 
     bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: scheme.surfaceContainerHigh,
+      backgroundColor: scheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
@@ -47,11 +52,11 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
 
-    listTileTheme: ListTileThemeData(
-      iconColor: scheme.onSurfaceVariant,
-      selectedColor: scheme.primary,
-      selectedTileColor: scheme.primary.withOpacity(0.15),
-    ),
+    // listTileTheme: ListTileThemeData(
+    //   iconColor: scheme.onSurfaceVariant,
+    //   selectedColor: scheme.primary,
+    //   selectedTileColor: scheme.primary.withOpacity(0.15),
+    // ),
 
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: scheme.surface,
@@ -78,7 +83,7 @@ class AppTheme {
     ),
 
     dialogTheme: DialogThemeData(
-      backgroundColor: scheme.surfaceContainerHigh,
+      backgroundColor: scheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       titleTextStyle: TextStyle(
         color: scheme.onSurface,

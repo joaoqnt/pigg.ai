@@ -21,7 +21,6 @@ class CustomContainer extends StatelessWidget {
       height: 50,
       decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(6)
       ),
       child: isLoading == true ? Container(
         alignment: Alignment.center,

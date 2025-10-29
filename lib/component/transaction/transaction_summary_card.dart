@@ -18,12 +18,12 @@ class TransactionSummaryCard extends StatelessWidget {
     final balance = income - expense;
 
     return Card(
-      color: cs.surfaceContainerLow,
+      color: cs.tertiaryContainer,
       margin: const EdgeInsets.symmetric(vertical: 6),
-      elevation: 0,
+      // elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -84,7 +84,7 @@ class TransactionSummaryCard extends StatelessWidget {
               Text(
                 UtilBrasilFields.obterReal(value),
                 style: TextStyle(
-                  fontSize: 15,
+                  // fontSize: 15,
                   color: valueColor,
                   fontWeight: isBold ? FontWeight.w900 : FontWeight.w700,
                 ),

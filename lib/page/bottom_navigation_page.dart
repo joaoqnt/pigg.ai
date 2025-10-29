@@ -15,6 +15,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final List<Widget> _pages = [
     Center(child: Text('Início')),
     Center(child: Text('Metas')),
+    Container(),
     TransactionPage(),
     Center(child: Text('Perfil')),
   ];
@@ -26,49 +27,42 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         padding: const EdgeInsets.all(10.0),
         child: _pages[_currentIndex],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: FloatingActionButton(
-          elevation: 0,
-          onPressed: () => ModalBottomComponent().show(context),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: const Icon(
-            Icons.add,
-            size: 30,
-          ),
-
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: Theme.of(context).colorScheme.tertiaryContainer))
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart_outlined),
-            activeIcon: Icon(Icons.show_chart),
-            label: 'Metas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            activeIcon: Icon(Icons.account_balance_wallet),
-            label: 'Finanças',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_outlined),
-            activeIcon: Icon(Icons.menu),
-            label: 'Menu',
-          ),
-        ],
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => index != 2 ? _currentIndex = index : ModalBottomComponent().show(context)),
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).colorScheme.onSurface,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Início',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart_outlined),
+              activeIcon: Icon(Icons.show_chart),
+              label: 'Metas',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              label: 'Criar',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance_wallet_outlined),
+              activeIcon: Icon(Icons.account_balance_wallet),
+              label: 'Finanças',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_outlined),
+              activeIcon: Icon(Icons.menu),
+              label: 'Menu',
+            ),
+          ],
+        ),
       ),
     );
   }

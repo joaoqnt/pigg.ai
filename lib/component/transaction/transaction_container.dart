@@ -30,10 +30,9 @@ class TransactionContainer extends StatelessWidget {
           key: ValueKey(transaction.id),
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
-            extentRatio: 0.5,
+            extentRatio: 0.6,
             children: [
               SlidableAction(
-                borderRadius: BorderRadius.circular(12),
                 onPressed: (_) {
                   TransactionModalBottom().show(
                     context,
@@ -45,10 +44,9 @@ class TransactionContainer extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                 foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
                 icon: Icons.copy,
-                label: Responsive.isMobile(context) ? null :'Duplicar',
+                label: 'Duplicar',
               ),
               SlidableAction(
-                borderRadius: BorderRadius.circular(12),
                 onPressed: (_) {
                   TransactionModalBottom().show(
                     context,
@@ -60,10 +58,9 @@ class TransactionContainer extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
                 foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
                 icon: Icons.edit_outlined,
-                label: Responsive.isMobile(context) ? null :'Editar',
+                label: 'Editar',
               ),
               SlidableAction(
-                borderRadius: BorderRadius.circular(12),
                 onPressed: (_) async {
                   CustomDeleteDialog.show(
                     context,
@@ -79,7 +76,7 @@ class TransactionContainer extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
                 icon: Icons.delete_outline,
-                label: Responsive.isMobile(context) ? null :'Excluir',
+                label: 'Excluir',
               ),
             ],
           ),
@@ -106,7 +103,7 @@ class TransactionContainer extends StatelessWidget {
                   BlurDialogOption(
                     label: 'Editar',
                     icon: Icons.edit,
-                    iconColor: Theme.of(context).colorScheme.primary,
+                    iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                     onTap: () {
                       TransactionModalBottom().show(context, controller, transaction.type, transaction: transaction);
                     },
@@ -139,7 +136,7 @@ class TransactionContainer extends StatelessWidget {
                     backgroundColor: ColorUtil().formatColor(transaction.category.color),
                     iconColor: ColorUtil().darken(ColorUtil().formatColor(transaction.category.color), 0.3),
                     isLoading: controller.isDeleting[transaction],
-                    iconData: transaction.type == "income" ? Icons.arrow_downward : Icons.arrow_upward,
+                    iconData: transaction.type == "expense" ? Icons.arrow_downward : Icons.arrow_upward,
                   ),
                   Expanded(
                     child: Column(

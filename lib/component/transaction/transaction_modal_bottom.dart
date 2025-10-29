@@ -139,23 +139,33 @@ class TransactionModalBottom {
   }
 
   Widget _buildQuickAmounts(TransactionController controller, {bool add = true}) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        for (final value in [0.5, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0, 500.0])
-          CustomChoiceChip(
-            text: "${add == true ? "+" : "-"} ${UtilBrasilFields.obterReal(value)}",
-            selected: false,
-            onSelected: (p0) {
-              if(add) {
-                controller.addAmount(value);
-              } else {
-                controller.removeAmount(value);
-              }
-            },
-          ),
-      ],
+    final amounts = [0.5, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0, 500.0];
+
+    return SizedBox(
+      height: 50,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            for (final value in amounts) ...[
+              CustomChoiceChip(
+                text: "${add ? "+" : "-"} ${UtilBrasilFields.obterReal(value)}",
+                selected: false,
+                onSelected: (_) {
+                  if (add) {
+                    controller.addAmount(value);
+                  } else {
+                    controller.removeAmount(value);
+                  }
+                },
+              ),
+              const SizedBox(width: 8), // espaçamento entre chips
+            ],
+          ],
+        ),
+      ),
     );
   }
+
 }

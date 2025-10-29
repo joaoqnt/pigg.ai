@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:piggai/component/transaction/transaction_container.dart';
+import 'package:piggai/component/bottom_navigation_component/modal_bottom_component.dart';
+import 'package:piggai/component/month_dropdown.dart';
 import 'package:piggai/component/transaction/transaction_list_by_day.dart';
-import 'package:piggai/component/transaction/transaction_modal_bottom.dart';
+import 'package:piggai/component/transaction/transaction_list_category.dart';
 import 'package:piggai/component/transaction/transaction_summary_card.dart';
 import 'package:piggai/controller/transaction_controller.dart';
-import 'package:piggai/util/date_util.dart';
 
 class TransactionPage extends StatelessWidget {
   TransactionPage({super.key});
@@ -14,35 +13,27 @@ class TransactionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text("Minhas finanças"),),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        spaceBetweenChildren: 10,
-        label: Text("Criar finança"),
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        appBar: AppBar(
+          title: Text("Finanças"),
+          // bottom: Tab(child: ),
+          actions: [
+            InkWell(
+              onTap: () => ModalBottomComponent().show(context,onlyTransaction: true,transactionController: _controller),
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  shape: BoxShape.circle
+                ),
+                child: Icon(Icons.add,color: colorScheme.onPrimary,),
+              ),
+            )
+          ],
         ),
-        children: [
-          SpeedDialChild(
-            child: const Icon(Icons.attach_money),
-            label: 'Receita',
-            onTap: () {
-              TransactionModalBottom().show(context, _controller, "income");
-            },
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.money_off),
-            label: 'Despesa',
-            onTap: () {
-              TransactionModalBottom().show(context, _controller, "expense");
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder(
+        body: FutureBuilder(
           future: _controller.initialize(context),
           builder: (context, snapshot) {
             return Observer(
@@ -51,10 +42,19 @@ class TransactionPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TransactionSummaryCard(expense: 200,income: 100,),
+                      MonthDropdown(
+                          monthMap: _controller.mapFilterDateTransaction,
+                          onChanged: (p0) => _controller.setDateFilter(p0!)
+                      ),
+                      SizedBox(height: 8),
+                      TransactionListCategory(controller: _controller),
+                      SizedBox(height: 8),
+                      TransactionSummaryCard(
+                        expense: _controller.mapAmountIncExp["expense"]??0,
+                        income: _controller.mapAmountIncExp["income"]??0,
+                      ),
                       for(int i = 0; i < _controller.datesOfTransactions.length; i++)
                         TransactionListByDay(dateTime: _controller.datesOfTransactions[i], controller: _controller),
-                      SizedBox(height: 80,)
                     ],
                   ),
                 );
@@ -64,5 +64,4 @@ class TransactionPage extends StatelessWidget {
       ),
     );
   }
-
 }

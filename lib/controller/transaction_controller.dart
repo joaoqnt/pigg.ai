@@ -36,16 +36,19 @@ abstract class _TransactionController with Store{
   @observable
   Map<TransactionModel,bool> isDeleting = ObservableMap.of({});
   @observable
-  Map<CategoryModel,bool> categoryFilterSelected = ObservableMap.of({});
+  CategoryModel? categoryFilterSelected;
   @observable
   CategoryModel? categorySelected;
   @observable
   ObservableList<TransactionModel> transactionsFiltered = ObservableList.of([]);
+  Map<String,String> mapFilterDateTransaction = {};
+  String? filterDateQuery;
   @observable
-  Map<String,String> mapFilterDateTransaction = ObservableMap.of({});
+  Map<String,double> mapAmountIncExp = ObservableMap.of({});
 
   Future<List<TransactionModel>> initialize(BuildContext context) async{
     _context = context;
+    _generateMonthFilters();
     await _getCategories();
     return await getTransactions();
   }
@@ -54,16 +57,9 @@ abstract class _TransactionController with Store{
   Future<List<TransactionModel>> getTransactions() async {
     try {
       // Faz o JOIN para trazer a categoria junto
-      final String query = '''
-      SELECT t.id as t_id, t.description, t.amount, t.type as t_type, t.date,
-             c.id as c_id, c.name as c_name, c.type as c_type, c.color as c_color
-      FROM transactions t
-      LEFT JOIN categories c ON t.category_id = c.id
-      ORDER BY t.date DESC
-      LIMIT 50 OFFSET $offset
-    ''';
 
-      List<Map<String, dynamic>> list = await _dao.rawQuery(query);
+
+      List<Map<String, dynamic>> list = await _dao.rawQuery(_buildQuery());
 
       transactionsFiltered.clear();
       _transactions.clear();
@@ -92,6 +88,7 @@ abstract class _TransactionController with Store{
 
       transactionsFiltered.addAll(_transactions);
       _getDistinctDates();
+      _getAmountIncomeExpense();
       return transactionsFiltered;
     } catch (e, stacktrace) {
       print('Erro ao buscar transações: $e');
@@ -102,13 +99,14 @@ abstract class _TransactionController with Store{
 
   @action
   Future<List<CategoryModel>> _getCategories() async{
-    List<dynamic> list = await _dao.select("categories",limit: 50,offset: offset,orderBy: "name asc");
+    List<dynamic> list = await _dao.select("categories",orderBy: "name asc");
     categories.clear();
+    categories.add(CategoryModel(name: "Todos", type: "none", color: '',id: -1));
     list.forEach((element) {
       CategoryModel category = CategoryModel.fromJson(element);
       categories.add(category);
     });
-    // offset++;
+    setCategoryFilter(categories.first);
     return categories;
   }
 
@@ -117,6 +115,18 @@ abstract class _TransactionController with Store{
     transactionsFiltered.forEach((element) {
       if(!datesOfTransactions.contains(element.date)){
         datesOfTransactions.add(element.date);
+      }
+    });
+  }
+
+  _getAmountIncomeExpense(){
+    mapAmountIncExp["income"] = 0;
+    mapAmountIncExp["expense"] = 0;
+    transactionsFiltered.forEach((element) {
+      if(element.type == "income") {
+        mapAmountIncExp["income"] = mapAmountIncExp["income"]! + element.amount;
+      } else {
+        mapAmountIncExp["expense"] = mapAmountIncExp["expense"]! + element.amount;
       }
     });
   }
@@ -193,7 +203,10 @@ abstract class _TransactionController with Store{
   void setType(String newType) => type = newType;
 
   @action
-  setCategoryFilter(CategoryModel category) => categoryFilterSelected[category] = !(categoryFilterSelected[category]??false);
+  setCategoryFilter(CategoryModel category) {
+    categoryFilterSelected = category;
+    getTransactions();
+  }
 
   @action
   setCategory(CategoryModel? category) => categorySelected = category;
@@ -237,7 +250,7 @@ abstract class _TransactionController with Store{
       DateTime date = isClone ? DateTime.now() : transaction.date;
       tecDateTransaction.text = DateUtil.formatDate(date);
       tecHourTransaction.text = DateUtil.formatHour(date);
-      type = transaction.type;
+      this.type = transaction.type;
       setCategory(transaction.category);
     } else {
       _clearTransaction(type);
@@ -267,5 +280,79 @@ abstract class _TransactionController with Store{
           : transaction!.date,
 
     );
+  }
+
+  Map<String, String> _generateMonthFilters({int monthsBack = 12}) {
+    final now = DateTime.now();
+    final Map<String, String> monthFilters = {};
+
+    for (int i = 0; i < monthsBack; i++) {
+      final date = DateTime(now.year, now.month - i, 1);
+      final year = date.year;
+      final month = date.month;
+
+      final lastDay = DateTime(year, month + 1, 0).day;
+
+      const monthNames = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+      ];
+      final monthName = monthNames[month - 1];
+
+      final key = "$monthName de $year";
+      final value = "t.date BETWEEN '$year-${month.toString().padLeft(2, '0')}-01' "
+          "AND '$year-${month.toString().padLeft(2, '0')}-$lastDay'";
+
+      monthFilters[key] = value;
+    }
+
+    mapFilterDateTransaction = monthFilters;
+    setDateFilter(mapFilterDateTransaction.values.first);
+
+    return monthFilters;
+  }
+
+  setDateFilter(String date){
+    filterDateQuery = date;
+    getTransactions();
+  }
+
+  String _buildQuery(){
+    List<String> whereArgs = [];
+    String whereQuery;
+
+    if(filterDateQuery != null){
+      whereArgs.add(filterDateQuery!);
+    }
+
+    if(categoryFilterSelected!= null && categoryFilterSelected!.id != -1){
+      whereArgs.add("t.category_id = ${categoryFilterSelected?.id}");
+    }
+
+    if(whereArgs.isNotEmpty){
+      whereQuery = "where ${whereArgs.join(" and ")}";
+    } else {
+      whereQuery = '';
+    }
+
+    final String query = '''
+      SELECT t.id as t_id, t.description, t.amount, t.type as t_type, t.date,
+             c.id as c_id, c.name as c_name, c.type as c_type, c.color as c_color
+      FROM transactions t
+      LEFT JOIN categories c ON t.category_id = c.id
+      $whereQuery
+      ORDER BY t.date DESC
+    ''';
+    return query;
   }
 }

@@ -98,7 +98,6 @@ class CategoryContainer extends StatelessWidget {
     if (showEditAction) {
       actions.add(
         SlidableAction(
-          borderRadius: BorderRadius.circular(12),
           onPressed: (_) => _editCategory(context),
           backgroundColor: colorScheme.tertiaryContainer,
           foregroundColor: colorScheme.onTertiaryContainer,
@@ -111,7 +110,6 @@ class CategoryContainer extends StatelessWidget {
     if (showDeleteAction) {
       actions.add(
         SlidableAction(
-          borderRadius: BorderRadius.circular(12),
           onPressed: (_) async => _deleteCategory(context),
           backgroundColor: colorScheme.errorContainer,
           foregroundColor: colorScheme.onErrorContainer,

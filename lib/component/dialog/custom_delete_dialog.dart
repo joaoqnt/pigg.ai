@@ -13,6 +13,7 @@ class CustomDeleteDialog {
         Color confirmColor = Colors.redAccent,
         Function()? onPressed,
       }) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return showDialog(
         context: context,
         builder: (context) {
@@ -29,8 +30,8 @@ class CustomDeleteDialog {
                   Container(
                     decoration: BoxDecoration(
                       border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade300),
-                          top: BorderSide(color: Colors.grey.shade300),
+                          bottom: BorderSide(color: colorScheme.tertiaryContainer),
+                          top: BorderSide(color: colorScheme.tertiaryContainer),
                       )
                     ),
                     child: Row(
@@ -54,7 +55,7 @@ class CustomDeleteDialog {
                   Container(
                     decoration: BoxDecoration(
                         border: Border(
-                            bottom: BorderSide(color: Colors.grey.shade300)
+                            bottom: BorderSide(color: colorScheme.tertiaryContainer)
                         )
                     ),
                     child: Row(
@@ -67,7 +68,7 @@ class CustomDeleteDialog {
                                 Navigator.pop(context);
                               },
                               child: Text(cancelText,
-                                style: TextStyle(color: Colors.black87)
+                                style: TextStyle(color: colorScheme.onTertiaryContainer)
                               )
                           ),
                         ),

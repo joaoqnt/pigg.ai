@@ -14,8 +14,10 @@ class CategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: SearchTextFormField(controller: _controller.tecSearch),
+        title: Text("Categorias"),
+        bottom: Tab(
+          child: SearchTextFormField(controller: _controller.tecSearch),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

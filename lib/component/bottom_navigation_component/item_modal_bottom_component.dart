@@ -16,13 +16,22 @@ class ItemModalBottomComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Row(
           children: [
-            CircleAvatar(radius: 30,child: Icon(icon,size: 30,),),
+            CircleAvatar(
+              radius: 30,
+              child: Icon(
+                  icon,
+                  size: 30,
+                  color:colorScheme.onTertiaryContainer
+              ),
+              backgroundColor: colorScheme.tertiaryContainer,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -32,8 +41,9 @@ class ItemModalBottomComponent extends StatelessWidget {
                     title,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 4),
                   Text(description,
-                      style: TextStyle(fontSize: 12)
+                      style: TextStyle(fontSize: 10)
                   ),
                 ],
               ),

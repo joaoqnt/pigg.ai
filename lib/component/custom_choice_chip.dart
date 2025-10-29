@@ -16,11 +16,11 @@ class CustomChoiceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final primary = colorScheme.primary;
-    final surface = colorScheme.surface;
+    final surface = colorScheme.surfaceContainerHigh;
     final onSurface = colorScheme.onSurface;
     final outline = colorScheme.outlineVariant;
 
-    final background = selected ? primary : surface.withOpacity(0.9);
+    final background = selected ? primary : surface;
     final textColor = selected ? colorScheme.onPrimary : onSurface.withOpacity(0.8);
 
     return InkWell(
@@ -29,7 +29,7 @@ class CustomChoiceChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         decoration: BoxDecoration(
           color: background,
           borderRadius: BorderRadius.circular(20),
@@ -52,7 +52,6 @@ class CustomChoiceChip extends StatelessWidget {
             fontSize: 11,
             color: textColor,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            letterSpacing: 0.2,
           ),
         ),
       ),
