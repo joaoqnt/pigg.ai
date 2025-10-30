@@ -125,7 +125,7 @@ class CustomTextFormField extends StatelessWidget {
 
   String? _defaultValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return '${hintText ?? "Campo"} é obrigatório';
+      return '${labelText ?? "Campo"} é obrigatório';
     }
     return null;
   }

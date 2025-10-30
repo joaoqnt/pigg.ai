@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/component/bottom_navigation_component/modal_bottom_component.dart';
+import 'package:piggai/controller/category_controller.dart';
+import 'package:piggai/controller/transaction_controller.dart';
 import 'package:piggai/page/transaction_page.dart';
+import 'package:piggai/util/singleton.dart';
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
@@ -12,16 +15,18 @@ class BottomNavigationPage extends StatefulWidget {
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    Center(child: Text('Início')),
-    Center(child: Text('Metas')),
-    Container(),
-    TransactionPage(),
-    Center(child: Text('Perfil')),
-  ];
-
   @override
   Widget build(BuildContext context) {
+
+
+    final List<Widget> _pages = [
+      Center(child: Text('Início')),
+      Center(child: Text('Metas')),
+      Container(),
+      TransactionPage(),
+      Center(child: Text('Perfil')),
+    ];
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -33,7 +38,10 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (index) => setState(() => index != 2 ? _currentIndex = index : ModalBottomComponent().show(context)),
+          onTap: (index) => setState(() => index != 2
+              ? _currentIndex = index
+              : ModalBottomComponent().show(context,transactionController: Singleton().transactionController)
+          ),
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).colorScheme.onSurface,
           items: [

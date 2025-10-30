@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/component/category/category_color_picker.dart';
 import 'package:piggai/component/category/category_type_selector.dart';
-import 'package:piggai/component/custom_text_form_field.dart';
+import 'package:piggai/component/custom/button/custom_alter_button.dart';
+import 'package:piggai/component/custom/custom_text_form_field.dart';
 import 'package:piggai/controller/category_controller.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:piggai/model/category_model.dart';
@@ -67,26 +68,15 @@ class CategoryModalBottom {
                       ),
                       CategoryTypeSelector(controller: controller),
                       SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: FilledButton(
-                              onPressed: () async{
-                                if(controller.formKey.currentState!.validate() && !controller.isInserting){
-                                  await controller.alterCategory(category: category);
-                                }
-                              },
-                              child: controller.isInserting ? Center(
-                                  child: SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(color: Colors.white)
-                                  )
-                              ) : Text("${category == null ? "Criar" : "Editar"} categoria"),
-                            ),
-                          ),
-                        ],
-                      ),
+                      CustomAlterButton(
+                        isInserting: controller.isInserting,
+                        formKey: controller.formKey,
+                        entityName: "categoria",
+                        entity: category,
+                        onPressed: () async {
+                          await controller.alterCategory(category: category);
+                        },
+                      )
                     ],
                   ),
                 ),

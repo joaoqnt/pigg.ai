@@ -8,75 +8,102 @@ class CategoryTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Observer(builder: (_) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Essa categoria é uma:",
-            style: TextStyle(fontSize: 12),
+          Text(
+            "Tipo da categoria",
+            style: theme.textTheme.bodySmall?.copyWith(fontSize: 13),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
+
           Row(
             children: [
-              _buildOption("expense", "Despesa", Icons.trending_down_rounded, context),
+              Expanded(
+                child: _CategoryTypeButton(
+                  label: "Despesa",
+                  icon: Icons.trending_down_rounded,
+                  isSelected: controller.type == "expense",
+                  activeColor: Colors.red.shade600,
+                  inactiveColor: theme.colorScheme.surfaceContainerLow,
+                  onTap: () => controller.setType("expense"),
+                ),
+              ),
               const SizedBox(width: 10),
-              _buildOption("income", "Receita", Icons.trending_up_rounded, context),
+              Expanded(
+                child: _CategoryTypeButton(
+                  label: "Receita",
+                  icon: Icons.trending_up_rounded,
+                  isSelected: controller.type == "income",
+                  activeColor: Colors.green.shade600,
+                  inactiveColor: theme.colorScheme.surfaceContainerLow,
+                  onTap: () => controller.setType("income"),
+                ),
+              ),
             ],
           ),
         ],
       );
     });
   }
+}
 
-  Widget _buildOption(String type, String title, IconData icon, BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final bool selected = controller.type == type;
+class _CategoryTypeButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color activeColor;
+  final Color inactiveColor;
+  final VoidCallback onTap;
 
-    // Cores derivadas do tema
-    final backgroundColor = selected
-        ? colorScheme.primaryContainer
-        : colorScheme.surfaceContainerLow;
+  const _CategoryTypeButton({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.onTap,
+  });
 
-    final borderColor = selected
-        ? colorScheme.primary
-        : Colors.transparent;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
-    final iconColor = selected
-        ? colorScheme.onPrimaryContainer
-        : colorScheme.onSurfaceVariant;
-
-    final textColor = selected
-        ? colorScheme.onPrimaryContainer
-        : colorScheme.onSurface;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.setType(type),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: borderColor, width: 1.2),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? activeColor.withOpacity(.12) : inactiveColor,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? activeColor : Colors.transparent,
+            width: 1.4,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 18, color: iconColor),
-              const SizedBox(width: 6),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: textColor,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? activeColor : theme.iconTheme.color?.withOpacity(.6),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? activeColor : theme.colorScheme.onSurface,
+                fontSize: 14,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

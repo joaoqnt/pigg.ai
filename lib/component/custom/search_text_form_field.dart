@@ -26,7 +26,7 @@ class SearchTextFormField extends StatelessWidget {
           borderSide: BorderSide.none, // sem borda externa
         ),
         filled: true,
-          fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+          fillColor: Theme.of(context).colorScheme.tertiaryContainer,
           onChanged: onChanged
       ),
     );

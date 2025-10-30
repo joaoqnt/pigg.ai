@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomChoiceChip extends StatelessWidget {
+class CustomChoiceButton extends StatelessWidget {
   final String text;
   final bool selected;
   final void Function(bool)? onSelected;
 
-  const CustomChoiceChip({
+  const CustomChoiceButton({
     super.key,
     required this.text,
     required this.selected,

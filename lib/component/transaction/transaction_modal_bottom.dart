@@ -3,9 +3,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piggai/component/category/category_dropdown.dart';
-import 'package:piggai/component/custom_choice_chip.dart';
-import 'package:piggai/component/custom_date_picker.dart';
-import 'package:piggai/component/custom_text_form_field.dart';
+import 'package:piggai/component/custom/button/custom_alter_button.dart';
+import 'package:piggai/component/custom/button/custom_choice_button.dart';
+import 'package:piggai/component/custom/custom_date_picker.dart';
+import 'package:piggai/component/custom/custom_text_form_field.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:piggai/controller/transaction_controller.dart';
 import 'package:piggai/model/transaction_model.dart';
@@ -104,28 +105,14 @@ class TransactionModalBottom {
                           CustomDatePicker(controller: controller.tecDateTransaction),
                           bigSpacing,
                           // Botão de salvar
-                          Row(
-                            children: [
-                              Expanded(
-                                child: FilledButton(
-                                  onPressed: () async {
-                                    if(controller.formKey.currentState!.validate() && !controller.isInserting){
-                                      await controller.alterTransaction(transaction: transaction);
-                                    }
-                                  },
-                                  child: controller.isInserting
-                                      ? Center(
-                                    child: SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary),
-                                    ),
-                                  )
-                                      : Text("${transaction == null ? "Criar" : "Editar"} $description"),
-                                ),
-                              ),
-                            ],
-                          ),
+                          CustomAlterButton(
+                              isInserting: controller.isInserting,
+                              formKey: controller.formKey,
+                              entityName: description,
+                            onPressed: () async {
+                              await controller.alterTransaction(transaction: transaction);
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -149,7 +136,7 @@ class TransactionModalBottom {
         child: Row(
           children: [
             for (final value in amounts) ...[
-              CustomChoiceChip(
+              CustomChoiceButton(
                 text: "${add ? "+" : "-"} ${UtilBrasilFields.obterReal(value)}",
                 selected: false,
                 onSelected: (_) {

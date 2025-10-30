@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/page/bottom_navigation_page.dart';
+import 'package:piggai/page/setup/onboarding_page.dart';
 import 'package:piggai/theme/app_theme.dart';
 import 'package:piggai/theme/util_theme.dart';
 
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
       home: const BottomNavigationPage(),
+      // home: OnboardingIntroPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

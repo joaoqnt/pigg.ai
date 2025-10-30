@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:piggai/component/custom_choice_chip.dart';
-import 'package:piggai/component/custom_text_form_field.dart';
+import 'package:piggai/component/custom/button/custom_choice_button.dart';
+import 'package:piggai/component/custom/custom_text_form_field.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final TextEditingController controller;
@@ -102,7 +102,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         Wrap(
           spacing: 8,
           children: mapDateSelected.keys.map((key) {
-            return CustomChoiceChip(
+            return CustomChoiceButton(
               text: key,
               selected: mapDateSelected[key]!,
               onSelected: (_) => _updateSelection(key),

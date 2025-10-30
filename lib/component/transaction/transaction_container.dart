@@ -2,8 +2,9 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:piggai/component/custom_blur_dialog.dart';
-import 'package:piggai/component/custom_container.dart';
+import 'package:piggai/component/custom/custom_blur_dialog.dart';
+import 'package:piggai/component/custom/custom_container.dart';
+import 'package:piggai/component/custom/slide/custom_slidable_actions.dart';
 import 'package:piggai/component/dialog/custom_delete_dialog.dart';
 import 'package:piggai/component/transaction/transaction_modal_bottom.dart';
 import 'package:piggai/controller/transaction_controller.dart';
@@ -28,57 +29,36 @@ class TransactionContainer extends StatelessWidget {
       builder: (context) {
         return Slidable(
           key: ValueKey(transaction.id),
-          endActionPane: ActionPane(
-            motion: const ScrollMotion(),
-            extentRatio: 0.6,
-            children: [
-              SlidableAction(
-                onPressed: (_) {
-                  TransactionModalBottom().show(
-                    context,
-                    controller,
-                    transaction.type,
-                    transactionClone: transaction,
-                  );
-                },
-                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-                foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-                icon: Icons.copy,
-                label: 'Duplicar',
-              ),
-              SlidableAction(
-                onPressed: (_) {
-                  TransactionModalBottom().show(
-                    context,
-                    controller,
-                    transaction.type,
+          endActionPane: CustomSlidableActions.build(
+            context: context,
+            useDuplicate: true,
+            useEdit: true,
+            useDelete: true,
+
+            onDuplicate: () {
+              TransactionModalBottom().show(
+                context, controller, transaction.type,
+                transactionClone: transaction,
+              );
+            },
+            onEdit: () {
+              TransactionModalBottom().show(
+                context, controller, transaction.type,
+                transaction: transaction,
+              );
+            },
+            onDelete: () {
+              CustomDeleteDialog.show(
+                context,
+                onPressed: () {
+                  Navigator.pop(context);
+                  controller.alterTransaction(
                     transaction: transaction,
+                    isDelete: true,
                   );
                 },
-                backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-                foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
-                icon: Icons.edit_outlined,
-                label: 'Editar',
-              ),
-              SlidableAction(
-                onPressed: (_) async {
-                  CustomDeleteDialog.show(
-                    context,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      controller.alterTransaction(
-                        transaction: transaction,
-                        isDelete: true,
-                      );
-                    },
-                  );
-                },
-                backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
-                icon: Icons.delete_outline,
-                label: 'Excluir',
-              ),
-            ],
+              );
+            },
           ),
           child: InkWell(
             onTap: () {
@@ -183,6 +163,7 @@ class TransactionContainer extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(width: 1)
                 ],
               ),
             ),

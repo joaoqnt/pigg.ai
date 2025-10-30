@@ -2,26 +2,33 @@ import 'package:flutter/material.dart';
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
+
+  // PRIMARY
   primary: Color(0xff1DB954),
   onPrimary: Colors.white,
   primaryContainer: Color(0xffC5F0D4),
   onPrimaryContainer: Color(0xff0A2A15),
 
+  // SECONDARY
   secondary: Color(0xff535353),
   onSecondary: Colors.white,
   secondaryContainer: Color(0xffE8E8E8),
   onSecondaryContainer: Color(0xff2D2D2D),
 
+  // TERTIARY
   tertiary: Color(0xff191414),
   onTertiary: Colors.white,
   tertiaryContainer: Color(0xffF4F4F4),
   onTertiaryContainer: Color(0xff191414),
 
-  error: Color(0xffE22134),
+  // ✅ MELHORADO — Error Palette
+  // Material 3 vibes — coral/red com tons suaves
+  error: Color(0xffd30000),               // Red coral bonito (menos neon)
   onError: Colors.white,
-  errorContainer: Color(0xffffdad6),
-  onErrorContainer: Color(0xff410002),
+  errorContainer: Color(0xffF9DEDE),      // Fundo rosado suave
+  onErrorContainer: Color(0xff5D0D0D),    // Texto vinho escuro
 
+  // SURFACE
   surface: Colors.white,
   onSurface: Color(0xff191414),
   onSurfaceVariant: Color(0xff535353),

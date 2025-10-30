@@ -1,9 +1,10 @@
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
-import 'package:piggai/component/custom_snackbar.dart';
+import 'package:piggai/component/custom/custom_snackbar.dart';
 import 'package:piggai/database/database_dao.dart';
 import 'package:piggai/util/color_util.dart';
+import 'package:piggai/util/singleton.dart';
 import 'package:piggai/util/string_util.dart';
 
 import '../model/category_model.dart';
@@ -107,6 +108,7 @@ abstract class _CategoryController with Store{
         }
       }
       await getCategories();
+      Singleton().transactionController.getCategories();
       if(!isDelete) {
         Navigator.pop(_context);
       }

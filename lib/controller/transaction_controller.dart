@@ -3,10 +3,12 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:piggai/component/custom_snackbar.dart';
+import 'package:piggai/component/custom/custom_snackbar.dart';
+import 'package:piggai/controller/category_controller.dart';
 import 'package:piggai/database/database_dao.dart';
 import 'package:piggai/model/transaction_model.dart';
 import 'package:piggai/util/date_util.dart';
+import 'package:piggai/util/singleton.dart';
 import 'package:piggai/util/string_util.dart';
 
 import '../model/category_model.dart';
@@ -17,6 +19,7 @@ class TransactionController = _TransactionController with _$TransactionControlle
 
 abstract class _TransactionController with Store{
   final _dao = DatabaseDAO();
+  late CategoryController categoryController;
   TextEditingController tecSearch = TextEditingController();
   TextEditingController tecDescriptionTransaction = TextEditingController();
   TextEditingController tecAmountTransaction = TextEditingController();
@@ -48,16 +51,15 @@ abstract class _TransactionController with Store{
 
   Future<List<TransactionModel>> initialize(BuildContext context) async{
     _context = context;
+    this.categoryController = Singleton().categoryController;
     _generateMonthFilters();
-    await _getCategories();
+    await getCategories();
     return await getTransactions();
   }
 
   @action
   Future<List<TransactionModel>> getTransactions() async {
     try {
-      // Faz o JOIN para trazer a categoria junto
-
 
       List<Map<String, dynamic>> list = await _dao.rawQuery(_buildQuery());
 
@@ -65,7 +67,6 @@ abstract class _TransactionController with Store{
       _transactions.clear();
 
       for (var element in list) {
-        // Cria o objeto CategoryModel
         final category = CategoryModel(
           id: element['c_id'],
           name: element['c_name'],
@@ -73,7 +74,6 @@ abstract class _TransactionController with Store{
           color: element['c_color'],
         );
 
-        // Cria o TransactionModel já com a categoria associada
         final transaction = TransactionModel(
           id: element['t_id'],
           amount: (element['amount'] as num).toDouble(),
@@ -98,13 +98,12 @@ abstract class _TransactionController with Store{
   }
 
   @action
-  Future<List<CategoryModel>> _getCategories() async{
-    List<dynamic> list = await _dao.select("categories",orderBy: "name asc");
+  Future<List<CategoryModel>> getCategories() async{
+    List<CategoryModel> list = await categoryController.getCategories();
     categories.clear();
     categories.add(CategoryModel(name: "Todos", type: "none", color: '',id: -1));
     list.forEach((element) {
-      CategoryModel category = CategoryModel.fromJson(element);
-      categories.add(category);
+      categories.add(element);
     });
     setCategoryFilter(categories.first);
     return categories;
@@ -351,7 +350,7 @@ abstract class _TransactionController with Store{
       FROM transactions t
       LEFT JOIN categories c ON t.category_id = c.id
       $whereQuery
-      ORDER BY t.date DESC
+      ORDER BY t.date DESC, t.id desc
     ''';
     return query;
   }

@@ -26,8 +26,11 @@ class AppTheme {
       elevation: 0,
       scrolledUnderElevation: 0,
       foregroundColor: scheme.onSurface,
-      centerTitle: true,
-      titleTextStyle: TextStyle(fontSize: 14,color: scheme.onSurface)
+      titleSpacing: 0,
+      actionsPadding: EdgeInsets.only(right: 10),
+
+      // centerTitle: true,
+      // titleTextStyle: TextStyle(fontSize: 14,color: scheme.onSurface)
     ),
 
     cardTheme: CardThemeData(
