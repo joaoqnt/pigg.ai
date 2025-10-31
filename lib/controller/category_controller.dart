@@ -65,71 +65,78 @@ abstract class _CategoryController with Store{
   void setType(String newType) => type = newType;
 
   @action
-  Future alterCategory({CategoryModel? category, bool isDelete = false}) async {
-    if(!isDelete){
+  Future<int?> alterCategory({
+    CategoryModel? category,
+    bool isDelete = false,
+    bool showSnackbar = true,
+    bool useProvidedCategory = false, // 👈 NOVO
+  }) async {
+    int? returnedId;
+
+    if (!isDelete) {
       setIsInserting(true);
     } else {
       setIsDeleting(true, category!);
     }
 
     String action;
-    try{
+
+    try {
       await Future.delayed(const Duration(milliseconds: 500));
-      CategoryModel categoryTmp = _buildCategory(category: category);
-      if(isDelete) {
-        categoryTmp.name = category!.name;
-      }
-      if(category == null){
+
+      // 👇 Se veio uma categoria e useProvidedCategory=true, usa ela
+      final categoryTmp = (category != null && useProvidedCategory)
+          ? category
+          : _buildCategory(category: category);
+
+      if (isDelete) {
+        action = "excluiu";
+        await _dao.delete("categories", "id = ?", [categoryTmp.id]);
+        await _dao.delete("transactions", "category_id = ?", [categoryTmp.id]);
+        returnedId = categoryTmp.id;
+      } else if (category == null || useProvidedCategory) {
+        // CREATE
         action = "criou";
-        await _dao.insert(
-            "categories",
-            categoryTmp.toJson()
-        );
+        returnedId = await _dao.insert("categories", categoryTmp.toJson());
+        categoryTmp.id = returnedId;
       } else {
-        action = isDelete ? "excluiu" : "editou";
-        if(isDelete){
-          await _dao.delete(
-              "categories",
-              "id = ?",
-              [categoryTmp.id]
-          );
-          await _dao.delete(
-              "transactions",
-              "category_id = ?",
-              [categoryTmp.id]
-          );
-        } else {
-          await _dao.update(
-              "categories",
-              categoryTmp.toJson(),
-              "id = ?",
-              [categoryTmp.id]
-          );
+        // UPDATE
+        action = "editou";
+        await _dao.update("categories", categoryTmp.toJson(), "id = ?", [categoryTmp.id]);
+        returnedId = categoryTmp.id;
+      }
+
+      await getCategories();
+      if(!useProvidedCategory){
+        try{
+          Singleton().transactionController.getCategories();
+        } catch(e){
+
         }
       }
-      await getCategories();
-      Singleton().transactionController.getCategories();
-      if(!isDelete) {
-        Navigator.pop(_context);
-      }
-      CustomSnackBar.show(
+
+      if (!isDelete && showSnackbar) Navigator.pop(_context);
+
+      if (showSnackbar) {
+        CustomSnackBar.show(
           context: _context,
           message: "Você $action a categoria ${categoryTmp.name}",
-          type: AnimatedSnackBarType.success
-      );
-    } catch(e){
+          type: AnimatedSnackBarType.success,
+        );
+      }
+    } catch (e) {
       Navigator.pop(_context);
       CustomSnackBar.show(
-          context: _context,
-          message: "Erro ao criar a categoria $e",
-          type: AnimatedSnackBarType.error
+        context: _context,
+        message: "Erro ao criar a categoria $e",
+        type: AnimatedSnackBarType.error,
       );
     }
-    if(!isDelete){
-      setIsInserting(false);
-    } else {
-      setIsDeleting(false, category!);
-    }
+
+    if (!isDelete) setIsInserting(false);
+    else setIsDeleting(false, category!);
+
+    return returnedId;
   }
 
   CategoryModel _buildCategory({CategoryModel? category}) {

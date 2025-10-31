@@ -79,7 +79,8 @@ abstract class _TransactionController with Store{
           amount: (element['amount'] as num).toDouble(),
           description: element['description'],
           type: element['t_type'],
-          date: DateTime.parse(element['date']),
+          // date: DateTime.parse(element['date']),
+          date: DateTime.now(),
           category: category,
         );
 
@@ -131,66 +132,92 @@ abstract class _TransactionController with Store{
   }
 
   @action
-  Future alterTransaction({TransactionModel? transaction, bool isDelete = false}) async {
-    if(!isDelete){
+  Future<int?> alterTransaction({
+    TransactionModel? transaction,
+    bool isDelete = false,
+    bool showSnackbar = true,
+    bool useProvidedTransaction = false,
+  }) async {
+
+    int? returnedId;
+
+    if (!isDelete) {
       setIsInserting(true);
     } else {
       setIsDeleting(true, transaction!);
     }
 
     String action;
-    try{
+
+    try {
       await Future.delayed(const Duration(milliseconds: 500));
-      TransactionModel transactionTmp = _buildTransaction(transaction: transaction);
-      if(isDelete) {
+
+      // Se estiver editando/deletando, usa a transaction enviada — caso contrário monta uma nova
+      TransactionModel transactionTmp =
+      (transaction != null && useProvidedTransaction)
+          ? transaction
+          : _buildTransaction(transaction: transaction);
+
+      if (isDelete) {
         transactionTmp.description = transaction!.description;
       }
-      if(transaction == null){
+
+      if (transaction == null || useProvidedTransaction) {
+        // INSERT
         action = "criou";
-        await _dao.insert(
-            "transactions",
-            transactionTmp.toJson()
-        );
+        returnedId = await _dao.insert("transactions", transactionTmp.toJson());
+        transactionTmp.id = returnedId;
       } else {
+        // UPDATE OU DELETE
         action = isDelete ? "excluiu" : "editou";
-        if(isDelete){
-          await _dao.delete(
-              "transactions",
-              "id = ?",
-              [transactionTmp.id]
-          );
+
+        if (isDelete) {
+          await _dao.delete("transactions", "id = ?", [transactionTmp.id]);
+          returnedId = transactionTmp.id;
         } else {
           await _dao.update(
-              "transactions",
-              transactionTmp.toJson(),
-              "id = ?",
-              [transactionTmp.id]
+            "transactions",
+            transactionTmp.toJson(),
+            "id = ?",
+            [transactionTmp.id],
           );
+          returnedId = transactionTmp.id;
         }
       }
+
       await getTransactions();
-      if(!isDelete) {
+
+      if (!isDelete && showSnackbar) {
         Navigator.pop(_context);
       }
-      CustomSnackBar.show(
+
+      if (showSnackbar) {
+        CustomSnackBar.show(
           context: _context,
-          message: "Você $action a ${transactionTmp.type == "income" ? "receita" : "despesa"} ${transactionTmp.description}",
-          type: AnimatedSnackBarType.success
-      );
-    } catch(e){
-      // Navigator.pop(_context);
-      CustomSnackBar.show(
+          message:
+          "Você $action a ${transactionTmp.type == "income" ? "receita" : "despesa"} ${transactionTmp.description}",
+          type: AnimatedSnackBarType.success,
+        );
+      }
+    } catch (e) {
+      if (showSnackbar) {
+        CustomSnackBar.show(
           context: _context,
           message: "Erro $e",
-          type: AnimatedSnackBarType.error
-      );
+          type: AnimatedSnackBarType.error,
+        );
+      }
     }
-    if(!isDelete){
+
+    if (!isDelete) {
       setIsInserting(false);
     } else {
       setIsDeleting(false, transaction!);
     }
+
+    return returnedId;
   }
+
 
   @action
   void setIsInserting(bool value) => isInserting = value;
@@ -309,7 +336,7 @@ abstract class _TransactionController with Store{
       final monthName = monthNames[month - 1];
 
       final key = "$monthName de $year";
-      final value = "t.date BETWEEN '$year-${month.toString().padLeft(2, '0')}-01' "
+      final value = "DATE(t.date) BETWEEN '$year-${month.toString().padLeft(2, '0')}-01' "
           "AND '$year-${month.toString().padLeft(2, '0')}-$lastDay'";
 
       monthFilters[key] = value;

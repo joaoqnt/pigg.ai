@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/controller/setup_controller.dart';
+import 'package:piggai/page/bottom_navigation_page.dart';
 import 'package:piggai/page/setup/setup_first_page.dart';
 
 class OnboardingIntroPage extends StatelessWidget {
@@ -85,7 +86,14 @@ class OnboardingIntroPage extends StatelessWidget {
                 ),
               ),
               TextButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    controller.setFirstAcess();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+                            (Route<dynamic> route) { return false;}
+                    );
+                  },
                   child: Text("Continuar sem configuração",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.tertiary,

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:piggai/component/setup/question_container.dart';
 import 'package:piggai/controller/setup_controller.dart';
-import 'package:piggai/page/setup/setup_second_page.dart';
+import 'package:piggai/page/bottom_navigation_page.dart';
 
-class SetupFirstPage extends StatefulWidget {
+class SetupSecondPage extends StatefulWidget {
   final SetupController controller;
-  SetupFirstPage({super.key, required this.controller});
+  SetupSecondPage({super.key, required this.controller});
 
   @override
-  State<SetupFirstPage> createState() => _SetupFirstPageState();
+  State<SetupSecondPage> createState() => _SetupFirstPageState();
 }
 
-class _SetupFirstPageState extends State<SetupFirstPage> {
+class _SetupFirstPageState extends State<SetupSecondPage> {
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _SetupFirstPageState extends State<SetupFirstPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Center(
-                child: Text("Página 2 de 3", style: TextStyle(fontSize: 12)),
+                child: Text("Página 3 de 3", style: TextStyle(fontSize: 12)),
               ),
             ),
           ]
@@ -43,7 +43,7 @@ class _SetupFirstPageState extends State<SetupFirstPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        for(int i = 0; i < widget.controller.questions.length/2; i++)
+                        for(int i = (widget.controller.questions.length/2).toInt(); i < widget.controller.questions.length; i++)
                           QuestionContainer(
                               controller: widget.controller,
                               question: widget.controller.questions[i]
@@ -60,8 +60,12 @@ class _SetupFirstPageState extends State<SetupFirstPage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        widget.controller.saveQuestions(true);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SetupSecondPage(controller: widget.controller),));
+                        widget.controller.saveQuestions(false);
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+                                (Route<dynamic> route) { return false;}
+                        );
                       },
                       child: Text(
                         "Pular",
@@ -72,8 +76,12 @@ class _SetupFirstPageState extends State<SetupFirstPage> {
                     FilledButton(
                       onPressed: () {
                         if(widget.controller.formKey.currentState!.validate()){
-                          widget.controller.saveQuestions(true);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SetupSecondPage(controller: widget.controller),));
+                          widget.controller.saveQuestions(false);
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+                                  (Route<dynamic> route) { return false;}
+                          );
                         }
                       },
                       child: Text("Avançar"),

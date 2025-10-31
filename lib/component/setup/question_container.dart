@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piggai/component/custom/custom_text_form_field.dart';
 import 'package:piggai/controller/setup_controller.dart';
 import 'package:piggai/model/question.dart';
+import 'package:piggai/util/formatter/real_input_formatter.dart';
 
 class QuestionContainer extends StatefulWidget {
   final SetupController controller;
@@ -49,7 +50,14 @@ class _QuestionContainerState extends State<QuestionContainer> {
           if(value && widget.question.requiresValue == true)
             CustomTextFormField(
               controller: widget.controller.mapValues[widget.question],
+              hintText: widget.question.valueHint,
               labelText: widget.question.valueLabel,
+              required: true,
+              inputFormatters: [
+                BrazilianMoneyInputFormatter()
+              ],
+              keyboardType: TextInputType.numberWithOptions(),
+              prefixIcon: Icon(Icons.attach_money),
             )
         ],
       ),
